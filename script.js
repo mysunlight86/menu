@@ -20,7 +20,7 @@ let optionElements = container.querySelectorAll(".option");
 for (let i = 0; i < ASSORTMENT.length; i++) {
   optionElements[i].addEventListener("click", function () {
     selection.innerHTML = "<ul></ul>";
-    if (i === 0) {
+    if (ASSORTMENT[i] === 'Напитки') {
       for (let j = 0; j < DRINKS.length; j++) {
         const listItem = document.createElement("li");
         listItem.textContent = DRINKS[j];
@@ -41,7 +41,7 @@ for (let i = 0; i < ASSORTMENT.length; i++) {
       }
     }
 
-    if (i === 1) {
+    if (ASSORTMENT[i] === 'Салаты') {
       for (let j = 0; j < SALADS.length; j++) {
         const listItem = document.createElement("li");
         listItem.textContent = SALADS[j];
@@ -59,7 +59,7 @@ for (let i = 0; i < ASSORTMENT.length; i++) {
       }
     }
 
-    if (i === 2) {
+    if (ASSORTMENT[i] === 'Десерты') {
       for (let j = 0; j < DESSERTS.length; j++) {
         const listItem = document.createElement("li");
         listItem.textContent = DESSERTS[j];
