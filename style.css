@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  min-width: 1000px;
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 18px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.menu {
+  display: flex;
+}
+
+.selection {
+  display: flex;
+  row-gap: 15px;
+  column-gap: 30px;
+  flex-wrap: wrap;
+}
