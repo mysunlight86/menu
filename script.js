@@ -16,6 +16,7 @@ for (let i = 0; i < ASSORTMENT.length; i++) {
 }
 
 let optionElements = container.querySelectorAll(".option");
+
 for (let i = 0; i < ASSORTMENT.length; i++) {
   optionElements[i].addEventListener("click", function () {
     selection.innerHTML = "<ul></ul>";
@@ -31,16 +32,11 @@ for (let i = 0; i < ASSORTMENT.length; i++) {
       }
 
       let orderItems = container.querySelectorAll(".item");
+
       for (let j = 0; j < DRINKS.length; j++) {
         orderItems[j].addEventListener("click", function () {
-          /* basket.push(orderItems[j].textContent);
-          console.log(orderItems[j].textContent);
-          console.log(basket); */
-
-          const listItem = document.createElement("li");
-          listItem.textContent = orderItems[j].textContent;
-          listItem.classList.add("basketItem");
-          basketContent.append(listItem);
+          basket.push(orderItems[j].textContent);
+          renderBasket();
         });
       }
     }
@@ -54,14 +50,11 @@ for (let i = 0; i < ASSORTMENT.length; i++) {
       }
 
       let orderItems = container.querySelectorAll(".item");
+
       for (let j = 0; j < SALADS.length; j++) {
         orderItems[j].addEventListener("click", function () {
-          // basket.push(orderItems[j].textContent);
-
-          const listItem = document.createElement("li");
-          listItem.textContent = orderItems[j].textContent;
-          listItem.classList.add("basketItem");
-          basketContent.append(listItem);
+          basket.push(orderItems[j].textContent);
+          renderBasket();
         });
       }
     }
@@ -75,14 +68,11 @@ for (let i = 0; i < ASSORTMENT.length; i++) {
       }
 
       let orderItems = container.querySelectorAll(".item");
+
       for (let j = 0; j < DESSERTS.length; j++) {
         orderItems[j].addEventListener("click", function () {
-          //basket.push(orderItems[j].textContent);
-
-          const listItem = document.createElement("li");
-          listItem.textContent = orderItems[j].textContent;
-          listItem.classList.add("basketItem");
-          basketContent.append(listItem);
+          basket.push(orderItems[j].textContent);
+          renderBasket();
         });
       }
     }
@@ -91,11 +81,15 @@ for (let i = 0; i < ASSORTMENT.length; i++) {
   });
 }
 
-/* for (let i = 0; i < basket.length; i++) {
-  const listItem = document.createElement('li');
-  listItem.textContent = basket[i];
-  listItem.classList.add('basketItem');
-  basketContent.append(listItem);
+function renderBasket() {
+  basketContent.replaceChildren();
+  for (let i = 0; i < basket.length; i++) {
+    const listItem = document.createElement('li');
+    listItem.textContent = basket[i];
+    listItem.classList.add('basketItem');
+    basketContent.append(listItem);
+  }
 }
 
-console.log(basket); */
+
+// console.log(basket);
