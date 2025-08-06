@@ -16,86 +16,90 @@ for (let i = 0; i < ASSORTMENT.length; i++) {
 }
 
 let optionElements = container.querySelectorAll(".option");
+
+function handleDrinksClick() {
+  selection.innerHTML = "";
+  for (let j = 0; j < DRINKS.length; j++) {
+    const listItem = document.createElement("li");
+    listItem.textContent = DRINKS[j];
+    listItem.classList.add("item");
+    /* listItem.addEventListener('click', function () {
+      basket.push(listItem.textContent);
+    }); */
+    selection.append(listItem);
+  }
+
+  let orderItems = container.querySelectorAll(".item");
+
+  for (let j = 0; j < DRINKS.length; j++) {
+    orderItems[j].addEventListener("click", function () {
+      basket.push(orderItems[j].textContent);
+      renderBasket();
+    });
+  }
+}
+
+function handleSaladsClick() {
+  selection.innerHTML = "";
+  for (let j = 0; j < SALADS.length; j++) {
+    const listItem = document.createElement("li");
+    listItem.textContent = SALADS[j];
+    listItem.classList.add("item");
+    selection.append(listItem);
+  }
+
+  let orderItems = container.querySelectorAll(".item");
+
+  for (let j = 0; j < SALADS.length; j++) {
+    orderItems[j].addEventListener("click", function () {
+      basket.push(orderItems[j].textContent);
+      renderBasket();
+    });
+  }
+}
+
+function handleDessertsClick() {
+  selection.innerHTML = "";
+  for (let j = 0; j < DESSERTS.length; j++) {
+    const listItem = document.createElement("li");
+    listItem.textContent = DESSERTS[j];
+    listItem.classList.add("item");
+    selection.append(listItem);
+  }
+
+  let orderItems = container.querySelectorAll(".item");
+
+  for (let j = 0; j < DESSERTS.length; j++) {
+    orderItems[j].addEventListener("click", function () {
+      basket.push(orderItems[j].textContent);
+      renderBasket();
+    });
+  }
+}
+
 for (let i = 0; i < ASSORTMENT.length; i++) {
-  optionElements[i].addEventListener("click", function () {
-    selection.innerHTML = "<ul></ul>";
-    if (i === 0) {
-      for (let j = 0; j < DRINKS.length; j++) {
-        const listItem = document.createElement("li");
-        listItem.textContent = DRINKS[j];
-        listItem.classList.add("item");
-        /* listItem.addEventListener('click', function () {
-          basket.push(listItem.textContent);
-        }); */
-        selection.append(listItem);
-      }
+  if (ASSORTMENT[i] === 'Напитки') {
+    optionElements[i].addEventListener("click", handleDrinksClick);
+  }
 
-      let orderItems = container.querySelectorAll(".item");
-      for (let j = 0; j < DRINKS.length; j++) {
-        orderItems[j].addEventListener("click", function () {
-          /* basket.push(orderItems[j].textContent);
-          console.log(orderItems[j].textContent);
-          console.log(basket); */
+  if (ASSORTMENT[i] === 'Салаты') {
+    optionElements[i].addEventListener("click", handleSaladsClick);
+  }
 
-          const listItem = document.createElement("li");
-          listItem.textContent = orderItems[j].textContent;
-          listItem.classList.add("basketItem");
-          basketContent.append(listItem);
-        });
-      }
-    }
-
-    if (i === 1) {
-      for (let j = 0; j < SALADS.length; j++) {
-        const listItem = document.createElement("li");
-        listItem.textContent = SALADS[j];
-        listItem.classList.add("item");
-        selection.append(listItem);
-      }
-
-      let orderItems = container.querySelectorAll(".item");
-      for (let j = 0; j < SALADS.length; j++) {
-        orderItems[j].addEventListener("click", function () {
-          // basket.push(orderItems[j].textContent);
-
-          const listItem = document.createElement("li");
-          listItem.textContent = orderItems[j].textContent;
-          listItem.classList.add("basketItem");
-          basketContent.append(listItem);
-        });
-      }
-    }
-
-    if (i === 2) {
-      for (let j = 0; j < DESSERTS.length; j++) {
-        const listItem = document.createElement("li");
-        listItem.textContent = DESSERTS[j];
-        listItem.classList.add("item");
-        selection.append(listItem);
-      }
-
-      let orderItems = container.querySelectorAll(".item");
-      for (let j = 0; j < DESSERTS.length; j++) {
-        orderItems[j].addEventListener("click", function () {
-          //basket.push(orderItems[j].textContent);
-
-          const listItem = document.createElement("li");
-          listItem.textContent = orderItems[j].textContent;
-          listItem.classList.add("basketItem");
-          basketContent.append(listItem);
-        });
-      }
-    }
-
-    return;
-  });
+  if (ASSORTMENT[i] === 'Десерты') {
+    optionElements[i].addEventListener("click", handleDessertsClick);
+  }
 }
 
-/* for (let i = 0; i < basket.length; i++) {
-  const listItem = document.createElement('li');
-  listItem.textContent = basket[i];
-  listItem.classList.add('basketItem');
-  basketContent.append(listItem);
+function renderBasket() {
+  basketContent.replaceChildren();
+  for (let i = 0; i < basket.length; i++) {
+    const listItem = document.createElement('li');
+    listItem.textContent = basket[i];
+    listItem.classList.add('basketItem');
+    basketContent.append(listItem);
+  }
 }
 
-console.log(basket); */
+
+// console.log(basket);
