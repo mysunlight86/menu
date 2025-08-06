@@ -1,105 +1,98 @@
-const ASSORTMENT = ["Напитки", "Салаты", "Десерты"];
-const DRINKS = ["Вода", "Сок", "Чай"];
-const SALADS = ["Мимоза", "Оливье", "Цезарь"];
-const DESSERTS = ["Пудинг", "Йогурт", "Мороженое"];
-let container = document.querySelector(".menu");
-let options = container.querySelector(".options");
-let selection = container.querySelector(".selection");
-let basket = [];
-let basketContent = document.querySelector(".basketContent");
+const categories = ["Напитки", "Салаты", "Десерты"];
+const drinks = ["Вода", "Сок", "Чай"];
+const salads = ["Мимоза", "Оливье", "Цезарь"];
+const desserts = ["Пудинг", "Йогурт", "Мороженое"];
+const options = document.querySelector(".options");
+const selection = document.querySelector(".selection");
+const cart = [];
+const cartContent = document.querySelector(".cartContent");
 
-for (let i = 0; i < ASSORTMENT.length; i++) {
+for (let i = 0; i < categories.length; i++) {
   const listItem = document.createElement("li");
-  listItem.textContent = ASSORTMENT[i];
+  listItem.textContent = categories[i];
   listItem.classList.add("option");
   options.append(listItem);
 }
 
-let optionElements = container.querySelectorAll(".option");
+const optionElements = options.querySelectorAll(".option");
 
 function handleDrinksClick() {
-  selection.innerHTML = "";
-  for (let j = 0; j < DRINKS.length; j++) {
-    const listItem = document.createElement("li");
-    listItem.textContent = DRINKS[j];
-    listItem.classList.add("item");
-    /* listItem.addEventListener('click', function () {
-      basket.push(listItem.textContent);
-    }); */
+  selection.innerHTML = '';
+  for (let j = 0; j < drinks.length; j++) {
+    const listItem = document.createElement('li');
+    listItem.textContent = drinks[j];
+    listItem.classList.add('item');
     selection.append(listItem);
   }
 
-  let orderItems = container.querySelectorAll(".item");
+  let orderItems = selection.querySelectorAll('.item');
 
-  for (let j = 0; j < DRINKS.length; j++) {
-    orderItems[j].addEventListener("click", function () {
-      basket.push(orderItems[j].textContent);
-      renderBasket();
+  for (let j = 0; j < drinks.length; j++) {
+    orderItems[j].addEventListener('click', function () {
+      cart.push(orderItems[j].textContent);
+      renderCart();
     });
   }
 }
 
 function handleSaladsClick() {
   selection.innerHTML = "";
-  for (let j = 0; j < SALADS.length; j++) {
-    const listItem = document.createElement("li");
-    listItem.textContent = SALADS[j];
-    listItem.classList.add("item");
+  for (let j = 0; j < salads.length; j++) {
+    const listItem = document.createElement('li');
+    listItem.textContent = salads[j];
+    listItem.classList.add('item');
     selection.append(listItem);
   }
 
-  let orderItems = container.querySelectorAll(".item");
+  orderItems = selection.querySelectorAll('.item');
 
-  for (let j = 0; j < SALADS.length; j++) {
-    orderItems[j].addEventListener("click", function () {
-      basket.push(orderItems[j].textContent);
-      renderBasket();
+  for (let j = 0; j < salads.length; j++) {
+    orderItems[j].addEventListener('click', function () {
+      cart.push(orderItems[j].textContent);
+      renderCart();
     });
   }
 }
 
 function handleDessertsClick() {
-  selection.innerHTML = "";
-  for (let j = 0; j < DESSERTS.length; j++) {
-    const listItem = document.createElement("li");
-    listItem.textContent = DESSERTS[j];
-    listItem.classList.add("item");
+  selection.innerHTML = '';
+  for (let j = 0; j < desserts.length; j++) {
+    const listItem = document.createElement('li');
+    listItem.textContent = desserts[j];
+    listItem.classList.add('item');
     selection.append(listItem);
   }
 
-  let orderItems = container.querySelectorAll(".item");
+  orderItems = selection.querySelectorAll('.item');
 
-  for (let j = 0; j < DESSERTS.length; j++) {
-    orderItems[j].addEventListener("click", function () {
-      basket.push(orderItems[j].textContent);
-      renderBasket();
+  for (let j = 0; j < desserts.length; j++) {
+    orderItems[j].addEventListener('click', function () {
+      cart.push(orderItems[j].textContent);
+      renderCart();
     });
   }
 }
 
-for (let i = 0; i < ASSORTMENT.length; i++) {
-  if (ASSORTMENT[i] === 'Напитки') {
-    optionElements[i].addEventListener("click", handleDrinksClick);
+for (let i = 0; i < categories.length; i++) {
+  if (categories[i] === 'Напитки') {
+    optionElements[i].addEventListener('click', handleDrinksClick);
   }
 
-  if (ASSORTMENT[i] === 'Салаты') {
-    optionElements[i].addEventListener("click", handleSaladsClick);
+  if (categories[i] === 'Салаты') {
+    optionElements[i].addEventListener('click', handleSaladsClick);
   }
 
-  if (ASSORTMENT[i] === 'Десерты') {
-    optionElements[i].addEventListener("click", handleDessertsClick);
+  if (categories[i] === 'Десерты') {
+    optionElements[i].addEventListener('click', handleDessertsClick);
   }
 }
 
-function renderBasket() {
-  basketContent.replaceChildren();
-  for (let i = 0; i < basket.length; i++) {
+function renderCart() {
+  cartContent.replaceChildren();
+  for (let i = 0; i < cart.length; i++) {
     const listItem = document.createElement('li');
-    listItem.textContent = basket[i];
-    listItem.classList.add('basketItem');
-    basketContent.append(listItem);
+    listItem.textContent = cart[i];
+    listItem.classList.add('cartItem');
+    cartContent.append(listItem);
   }
 }
-
-
-// console.log(basket);
