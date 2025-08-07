@@ -3,33 +3,32 @@ const selection = document.querySelector(".selection");
 const cartArray = [];
 const cartContent = document.querySelector(".cartContent");
 
+class Food {
+  constructor(title) {
+    this.title = title;
+  }
 
+  render(parentElement) {
+    this.element = document.createElement("li");
+    this.element.textContent = this.title;
+    this.element.classList.add("item");
+    parentElement.append(this.element);
+    this.subscribe();
+  }
 
+  subscribe() {
+    this.element.addEventListener("click", this.handleClick);
+  }
 
+  unsubscribe() {
+    this.element.removeEventListener('click', this.handleClick)
+  }
 
-
-
-class Cart {
-  render() {
-    cartContent.replaceChildren();
-    for (let i = 0; i < cartArray.length; i++) {
-      this.listItem = document.createElement("li");
-      this.listItem.textContent = cartArray[i];
-      this.listItem.classList.add("cartItem");
-      cartContent.append(this.listItem);
-    }
+  handleClick(event) {
+    cartArray.push(event.target.textContent);
+    cart.render(cartContent);
   }
 }
-
-class Menu {
-  render(list) {
-    for (let i = 0; i < list.length; i++) {
-      list[i].render(options, selection);
-    }
-  }
-}
-
-
 
 class Category {
   constructor(title, items) {
@@ -66,43 +65,33 @@ class Category {
   }
 }
 
-
-
-
-
-
-
-class Food {
-  constructor(title) {
-    this.title = title;
+class Menu {
+  constructor(categories) {
+    this.categories = categories;
   }
 
-  render(parentElement) {
-    this.element = document.createElement("li");
-    this.element.textContent = this.title;
-    this.element.classList.add("item");
-    parentElement.append(this.element);
-    this.subscribe();
-  }
-
-  subscribe() {
-    this.element.addEventListener("click", this.handleClick);
-  }
-
-  unsubscribe() {
-    this.element.removeEventListener('click', this.handleClick)
-  }
-
-  handleClick(event) {
-    cartArray.push(event.target.textContent);
-    cart.render(cartContent);
+  render(parentElement, itemsContainer) {
+    for (let i = 0; i < this.categories.length; i++) {
+      this.categories[i].render(parentElement, itemsContainer);
+    }
   }
 }
 
+class Cart {
+  render() {
+    cartContent.replaceChildren();
+    for (let i = 0; i < cartArray.length; i++) {
+      this.listItem = document.createElement("li");
+      this.listItem.textContent = cartArray[i];
+      this.listItem.classList.add("cartItem");
+      cartContent.append(this.listItem);
+    }
+  }
+}
 
+const cart = new Cart();
 
-
-const categories = [
+new Menu([
   new Category("Напитки", [new Food("Вода"), new Food("Сок"), new Food("Чай")]),
   new Category("Салаты", [new Food("Мимоза"), new Food("Оливье"), new Food("Цезарь")]),
   new Category("Десерты", [
@@ -110,8 +99,4 @@ const categories = [
     new Food("Йогурт"),
     new Food("Мороженое"),
   ]),
-];
-
-const cart = new Cart();
-const menu = new Menu();
-menu.render(categories);
+]).render(options, selection);
