@@ -1,98 +1,108 @@
-const categories = ["Напитки", "Салаты", "Десерты"];
-const drinks = ["Вода", "Сок", "Чай"];
-const salads = ["Мимоза", "Оливье", "Цезарь"];
-const desserts = ["Пудинг", "Йогурт", "Мороженое"];
 const options = document.querySelector(".options");
 const selection = document.querySelector(".selection");
-const cart = [];
+const cartArray = [];
 const cartContent = document.querySelector(".cartContent");
 
-for (let i = 0; i < categories.length; i++) {
-  const listItem = document.createElement("li");
-  listItem.textContent = categories[i];
-  listItem.classList.add("option");
-  options.append(listItem);
-}
-
-const optionElements = options.querySelectorAll(".option");
-
-function handleDrinksClick() {
-  selection.innerHTML = '';
-  for (let j = 0; j < drinks.length; j++) {
-    const listItem = document.createElement('li');
-    listItem.textContent = drinks[j];
-    listItem.classList.add('item');
-    selection.append(listItem);
-  }
-
-  let orderItems = selection.querySelectorAll('.item');
-
-  for (let j = 0; j < drinks.length; j++) {
-    orderItems[j].addEventListener('click', function () {
-      cart.push(orderItems[j].textContent);
-      renderCart();
-    });
+class Cart {
+  render() {
+    cartContent.replaceChildren();
+    for (let i = 0; i < cartArray.length; i++) {
+      this.listItem = document.createElement("li");
+      this.listItem.textContent = cartArray[i];
+      this.listItem.classList.add("cartItem");
+      cartContent.append(this.listItem);
+    }
   }
 }
 
-function handleSaladsClick() {
-  selection.innerHTML = "";
-  for (let j = 0; j < salads.length; j++) {
-    const listItem = document.createElement('li');
-    listItem.textContent = salads[j];
-    listItem.classList.add('item');
-    selection.append(listItem);
-  }
-
-  orderItems = selection.querySelectorAll('.item');
-
-  for (let j = 0; j < salads.length; j++) {
-    orderItems[j].addEventListener('click', function () {
-      cart.push(orderItems[j].textContent);
-      renderCart();
-    });
+class Menu {
+  render(list) {
+    for (let i = 0; i < list.length; i++) {
+      list[i].render();
+    }
   }
 }
 
-function handleDessertsClick() {
-  selection.innerHTML = '';
-  for (let j = 0; j < desserts.length; j++) {
-    const listItem = document.createElement('li');
-    listItem.textContent = desserts[j];
-    listItem.classList.add('item');
-    selection.append(listItem);
+class Category {
+  constructor(title) {
+    this.title = title;
   }
 
-  orderItems = selection.querySelectorAll('.item');
+  render() {
+    this.listItem = document.createElement("li");
+    this.listItem.textContent = this.title;
+    this.listItem.classList.add("option");
+    options.append(this.listItem);
+    this.subscribe();
+  }
 
-  for (let j = 0; j < desserts.length; j++) {
-    orderItems[j].addEventListener('click', function () {
-      cart.push(orderItems[j].textContent);
-      renderCart();
-    });
+  handleClick(category) {
+    selection.innerHTML = "";
+    for (let i = 0; i < category.length; i++) {
+      category[i].render();
+    }
+  }
+
+  subscribe() {
+    if (this.title === "Напитки") {
+      this.listItem.addEventListener("click", () => {
+        this.handleClick(drinks);
+      });
+    }
+
+    if (this.title === "Салаты") {
+      this.listItem.addEventListener("click", () => {
+        this.handleClick(salads);
+      });
+    }
+
+    if (this.title === "Десерты") {
+      this.listItem.addEventListener("click", () => {
+        this.handleClick(desserts);
+      });
+    }
+  }
+}
+
+class Food {
+  constructor(title) {
+    this.title = title;
+  }
+
+  render() {
+    this.listItem = document.createElement("li");
+    this.listItem.textContent = this.title;
+    this.listItem.classList.add("item");
+    selection.append(this.listItem);
+    this.subscribe();
+  }
+
+  handleClick() {
+    cartArray.push(this.title);
+    cart.render(cartContent);
+  }
+
+  subscribe() {
+    this.listItem.addEventListener("click", () => this.handleClick());
   }
 }
 
-for (let i = 0; i < categories.length; i++) {
-  if (categories[i] === 'Напитки') {
-    optionElements[i].addEventListener('click', handleDrinksClick);
-  }
+const categories = [
+  new Category("Напитки"),
+  new Category("Салаты"),
+  new Category("Десерты"),
+];
 
-  if (categories[i] === 'Салаты') {
-    optionElements[i].addEventListener('click', handleSaladsClick);
-  }
+const drinks = [new Food("Вода"), new Food("Сок"), new Food("Чай")];
 
-  if (categories[i] === 'Десерты') {
-    optionElements[i].addEventListener('click', handleDessertsClick);
-  }
-}
+const salads = [new Food("Мимоза"), new Food("Оливье"), new Food("Цезарь")];
 
-function renderCart() {
-  cartContent.replaceChildren();
-  for (let i = 0; i < cart.length; i++) {
-    const listItem = document.createElement('li');
-    listItem.textContent = cart[i];
-    listItem.classList.add('cartItem');
-    cartContent.append(listItem);
-  }
-}
+const desserts = [
+  new Food("Пудинг"),
+  new Food("Йогурт"),
+  new Food("Мороженое"),
+];
+
+const cart = new Cart();
+const menu = new Menu();
+menu.render(categories);
