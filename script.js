@@ -6,6 +6,7 @@ const cartContent = document.querySelector(".cartContent");
 class Food {
   constructor(title) {
     this.title = title;
+    this.handleClick = this.handleClick.bind(this); // ?
   }
 
   render(parentElement) {
@@ -78,13 +79,13 @@ class Menu {
 }
 
 class Cart {
-  render() {
-    cartContent.replaceChildren();
+  render(parentElement) {
+    parentElement.replaceChildren();
     for (let i = 0; i < cartArray.length; i++) {
       this.listItem = document.createElement("li");
       this.listItem.textContent = cartArray[i];
       this.listItem.classList.add("cartItem");
-      cartContent.append(this.listItem);
+      parentElement.append(this.listItem);
     }
   }
 }
