@@ -41,11 +41,6 @@ class Cart {
 
 // View and Controllers
 
-const options = document.querySelector(".options");
-const selection = document.querySelector(".selection");
-const cartArray = [];
-const cartContent = document.querySelector(".cartContent");
-
 class FoodCard {
   constructor(food) {
     this.food = food;
@@ -159,6 +154,8 @@ class CartList {
 
 // Initialization
 
+const cartContent = document.querySelector(".cartContent");
+
 const cart = new Cart();
 const menu = new Menu();
 
@@ -172,18 +169,16 @@ menu.add(new Food("Пудинг", "Десерты"));
 menu.add(new Food("Йогурт", "Десерты"));
 menu.add(new Food("Мороженое", "Десерты"));
 
-new MenuView(menu).render(options, selection);
 const cartList = new CartList(cart);
 cartList.render(cartContent);
 
-
-
-
-
+new MenuView(menu).render(
+  document.querySelector(".options"),
+  document.querySelector(".selection")
+);
 
 
 /*
-
 
 Model
 ^    ^
@@ -194,48 +189,3 @@ View |
 Controller
 
 */
-
-
-
-function f1() {
-  console.log('f1', this);
-  const f3 = () => {
-    console.log('f3', this);
-  }
-  f3();
-
-  function f4() {
-    console.log('f4', this);
-  }
-
-  f4();
-}
-
-const f2 = () => {
-  console.log('f2', this);
-}
-
-const Sharik = {
-  name: 'I`am Sharik',
-  f1: f1,
-  f2: f2,
-}
-
-const Murzik = {
-  name: 'I`am Murzik',
-  f1: f1,
-  f2: f2,
-}
-
-
-Sharik.f1();
-Sharik.f2();
-
-
-
-
-
-
-
-
-
