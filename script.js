@@ -21,6 +21,23 @@ class Menu {
   }
 }
 
+class Cart {
+  constructor() {
+    this.items = [];
+  }
+
+  add(food) {
+    this.items.push(food);
+  }
+
+  getAll() {
+    return this.items;
+  }
+
+  getCount() {
+    return this.items.length;
+  }
+}
 
 // View and Controllers
 
@@ -50,9 +67,11 @@ class FoodCard {
     this.element.removeEventListener('click', this.handleClick)
   }
 
-  handleClick(event) {
-    cartArray.push(event.target.textContent);
-    cart.render(cartContent);
+  // Method 2
+
+  handleClick = () => {
+    cart.add(this.food);
+    cartList.render(cartContent);
   }
 }
 
@@ -122,12 +141,16 @@ class MenuView {
   }
 }
 
-class Cart {
+class CartList {
+  constructor(cart) {
+    this.cart = cart;
+  }
+
   render(parentElement) {
     parentElement.replaceChildren();
-    for (let i = 0; i < cartArray.length; i++) {
+    for (const item of this.cart.getAll()) {
       this.listItem = document.createElement("li");
-      this.listItem.textContent = cartArray[i];
+      this.listItem.textContent = item.title;
       this.listItem.classList.add("cartItem");
       parentElement.append(this.listItem);
     }
@@ -137,7 +160,6 @@ class Cart {
 // Initialization
 
 const cart = new Cart();
-
 const menu = new Menu();
 
 menu.add(new Food("Вода", "Напитки"));
@@ -151,7 +173,8 @@ menu.add(new Food("Йогурт", "Десерты"));
 menu.add(new Food("Мороженое", "Десерты"));
 
 new MenuView(menu).render(options, selection);
-
+const cartList = new CartList(cart);
+cartList.render(cartContent);
 
 
 
@@ -172,6 +195,41 @@ Controller
 
 */
 
+
+
+function f1() {
+  console.log('f1', this);
+  const f3 = () => {
+    console.log('f3', this);
+  }
+  f3();
+
+  function f4() {
+    console.log('f4', this);
+  }
+
+  f4();
+}
+
+const f2 = () => {
+  console.log('f2', this);
+}
+
+const Sharik = {
+  name: 'I`am Sharik',
+  f1: f1,
+  f2: f2,
+}
+
+const Murzik = {
+  name: 'I`am Murzik',
+  f1: f1,
+  f2: f2,
+}
+
+
+Sharik.f1();
+Sharik.f2();
 
 
 
