@@ -26,8 +26,14 @@ class Cart {
     this.items = [];
   }
 
-  add(food) {
-    this.items.push(food);
+  add(item) {
+    this.items.push(item);
+  }
+
+  remove(item) {
+    const itemIndex = this.items.indexOf(item);
+    if (itemIndex === -1) return;
+    this.items.splice(itemIndex, 1);
   }
 
   getAll() {
@@ -185,20 +191,21 @@ class CartList {
   }
 
   getElementByTitle(title) {
-    for (let item of this.cart) {
-      if (item.includes(title)) {
-        return item;
-      }
+    for (const item of this.cart.getAll()) {
+      if (item.title === title.trim()) return item;
     }
+    return null;
   }
 
-  remove(element) {
-    delete this.cart[element];
-    this.render();
-    cartCounter.render();
+  remove(itemTitle) {
+    const item = this.getElementByTitle(itemTitle);
+    this.cart.remove(item);
+    this.render(this.parentElement);
+    cartCounter.render(document.querySelector(".orderCounter"));
   }
 
   render(parentElement) {
+    this.parentElement = parentElement;
     parentElement.replaceChildren();
     for (const item of this.cart.getAll()) {
       this.listItem = document.createElement("li");
@@ -217,7 +224,7 @@ class CartList {
     this.listItem.removeEventListener("click", this.handleClick);
   }
 
-  handleClick(event) {
+  handleClick = (event) => {
     this.remove(event.target.textContent);
   }
 }
