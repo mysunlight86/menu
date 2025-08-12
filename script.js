@@ -174,12 +174,7 @@ class CartIcon {
   }
 
   handleclick() {
-    const cartContent = document.querySelector(".cartContent");
-    cartContent.style.display = "flex";
-
-    if (this.cart.getCount() === 0) {
-      cartContent.textContent = "Вы пока ничего не выбрали";
-    }
+    cartList.toggleVisibility();
   }
 }
 
@@ -212,6 +207,14 @@ class CartList {
       parentElement.append(this.listItem);
       this.subscribe();
     }
+
+    if (this.cart.getCount() === 0) {
+      parentElement.textContent = "Вы пока ничего не выбрали";
+    }
+  }
+
+  toggleVisibility() {
+    this.parentElement.classList.toggle('hidden');
   }
 
   subscribe() {

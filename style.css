@@ -42,9 +42,12 @@ ul {
 }
 
 .cartContent {
-  display: none;
   background-color: bisque;
   width: 30%;
+}
+
+.cartContent.hidden {
+  display: none;
 }
 
 .orderCounter {
