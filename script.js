@@ -73,7 +73,7 @@ class FoodCard {
   handleClick = () => {
     cart.add(this.food);
     cartList.render(cartContent);
-    cartCounter.render(document.querySelector(".orderCounter"));
+    cartIcon.render(document.querySelector(".cartIcon"), document.querySelector(".orderCounter"));
   };
 }
 
@@ -147,18 +147,30 @@ class MenuView {
 }
 
 class CartIcon {
-  constructor(cartElement, cart) {
-    this.cartElement = cartElement;
+  constructor(cart) {
     this.cart = cart;
     this.handleclick = this.handleclick.bind(this);
   }
 
+  render(parentElement, counterElement) {
+    this.parentElement = parentElement;
+    const counter = this.cart.getCount();
+    counterElement.textContent = counter;
+    if (counter > 0) {
+      counterElement.style.display = "inline-block";
+    } else {
+      counterElement.style.display = 'none';
+    }
+    this.subscribe();
+  }
+
+
   subscribe() {
-    this.cartElement.addEventListener("click", this.handleclick);
+    this.parentElement.addEventListener("click", this.handleclick);
   }
 
   unsubscribe() {
-    this.cartElement.removeEventListener("click", this.handleclick);
+    this.parentElement.removeEventListener("click", this.handleclick);
   }
 
   handleclick() {
@@ -167,20 +179,6 @@ class CartIcon {
 
     if (this.cart.getCount() === 0) {
       cartContent.textContent = "Вы пока ничего не выбрали";
-    }
-  }
-}
-
-class CartCounter {
-  constructor(cart) {
-    this.cart = cart;
-  }
-
-  render(parentElement) {
-    const counter = this.cart.getCount();
-    parentElement.textContent = counter;
-    if (counter > 0) {
-      parentElement.style.display = "inline-block";
     }
   }
 }
@@ -201,7 +199,7 @@ class CartList {
     const item = this.getElementByTitle(itemTitle);
     this.cart.remove(item);
     this.render(this.parentElement);
-    cartCounter.render(document.querySelector(".orderCounter"));
+    cartIcon.render(document.querySelector(".cartIcon"), document.querySelector(".orderCounter"));
   }
 
   render(parentElement) {
@@ -251,11 +249,8 @@ new MenuView(menu).render(
   document.querySelector(".selection")
 );
 
-const cartIcon = new CartIcon(document.querySelector(".cartIcon"), cart);
-cartIcon.subscribe();
-
-
-const cartCounter = new CartCounter(cart);
+const cartIcon = new CartIcon(cart);
+cartIcon.render(document.querySelector(".cartIcon"), document.querySelector(".orderCounter"));
 
 const cartList = new CartList(cart);
 cartList.render(cartContent);
