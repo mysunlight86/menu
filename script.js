@@ -138,16 +138,40 @@ class MenuView {
   }
 }
 
+class CartIcon {
+  constructor(cartElement, cart) {
+    this.cartElement = cartElement;
+    this.cart = cart;
+    this.handleclick = this.handleclick.bind(this);
+  }
+
+  subscribe() {
+    this.cartElement.addEventListener("click", this.handleclick);
+  }
+
+  unsubscribe() {
+    this.cartElement.removeEventListener("click", this.handleclick);
+  }
+
+  handleclick() {
+    const cartContent = document.querySelector(".cartContent");
+    cartContent.style.display = "flex";
+
+    if (this.cart.getCount() === 0) {
+      cartContent.textContent = "Вы пока ничего не выбрали";
+    }
+  }
+}
+
 class CartCounter {
   constructor(cart) {
     this.cart = cart;
   }
 
   render(parentElement) {
-    parentElement.style.display = "none";
-    this.counter = this.cart.getCount();
-    parentElement.textContent = this.counter;
-    if (this.counter > 0) {
+    const counter = this.cart.getCount();
+    parentElement.textContent = counter;
+    if (counter > 0) {
       parentElement.style.display = "inline-block";
     }
   }
@@ -186,13 +210,16 @@ menu.add(new Food("Пудинг", "Десерты"));
 menu.add(new Food("Йогурт", "Десерты"));
 menu.add(new Food("Мороженое", "Десерты"));
 
-const cartList = new CartList(cart);
-cartList.render(cartContent);
-
 new MenuView(menu).render(
   document.querySelector(".options"),
   document.querySelector(".selection")
 );
+
+const cartIcon = new CartIcon(document.querySelector(".cartIcon"), cart);
+cartIcon.subscribe();
+
+const cartList = new CartList(cart);
+cartList.render(cartContent);
 
 
 /*

@@ -42,6 +42,7 @@ ul {
 }
 
 .cartContent {
+  display: none;
   background-color: bisque;
   width: 30%;
 }
