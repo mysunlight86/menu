@@ -47,6 +47,7 @@ class Cart {
 
 // View and Controllers
 
+// TODO: rename view classes *View
 class FoodCard {
   constructor(food) {
     this.food = food;
@@ -118,7 +119,7 @@ class MenuView {
     this.items = items;
   }
 
-  getCategories() {
+  getCategories() { // TODO: move to model
     const categories = new Set();
     for (const item of this.items.getAll()) {
       categories.add(item.category);
@@ -126,7 +127,7 @@ class MenuView {
     return [...categories];
   }
 
-  getCategoryItems(category) {
+  getCategoryItems(category) { // TODO: move to model
     const items = [];
     for (const item of this.items.getAll()) {
       if (item.category === category) items.push(item);
@@ -134,7 +135,7 @@ class MenuView {
     return items;
   }
 
-  render(parentElement, itemsContainer) {
+  render(parentElement, itemsContainer) { // TODO: rename parentElement -> element
     const categories = this.getCategories();
     for (const category of categories) {
       const categoryView = new CategoryView(
@@ -183,7 +184,7 @@ class CartList {
     this.cart = cart;
   }
 
-  getElementByTitle(title) {
+  getElementByTitle(title) { // TODO: move to model >> this.cart.removeByTitle(title)
     for (const item of this.cart.getAll()) {
       if (item.title === title.trim()) return item;
     }
@@ -232,6 +233,7 @@ class CartList {
 
 // Initialization
 
+// TODO: move here all querySelector
 const cartContent = document.querySelector(".cartContent");
 
 const cart = new Cart();
