@@ -44,7 +44,6 @@ class Cart {
 class FoodCard {
   constructor(food) {
     this.food = food;
-    this.cartCounter = new CartCounter(cart);
   }
 
   render(parentElement) {
@@ -60,7 +59,7 @@ class FoodCard {
   }
 
   unsubscribe() {
-    this.element.removeEventListener('click', this.handleClick)
+    this.element.removeEventListener("click", this.handleClick);
   }
 
   // Method 2
@@ -68,8 +67,8 @@ class FoodCard {
   handleClick = () => {
     cart.add(this.food);
     cartList.render(cartContent);
-    this.cartCounter.render(document.querySelector(".orderCounter"));
-  }
+    cartCounter.render(document.querySelector(".orderCounter"));
+  };
 }
 
 class CategoryView {
@@ -110,7 +109,7 @@ class CategoryView {
 
 class MenuView {
   constructor(items) {
-    this.items = items
+    this.items = items;
   }
 
   getCategories() {
@@ -132,7 +131,10 @@ class MenuView {
   render(parentElement, itemsContainer) {
     const categories = this.getCategories();
     for (const category of categories) {
-      const categoryView = new CategoryView(category, this.getCategoryItems(category));
+      const categoryView = new CategoryView(
+        category,
+        this.getCategoryItems(category)
+      );
       categoryView.render(parentElement, itemsContainer);
     }
   }
@@ -182,6 +184,20 @@ class CartList {
     this.cart = cart;
   }
 
+  getElementByTitle(title) {
+    for (let item of this.cart) {
+      if (item.includes(title)) {
+        return item;
+      }
+    }
+  }
+
+  remove(element) {
+    delete this.cart[element];
+    this.render();
+    cartCounter.render();
+  }
+
   render(parentElement) {
     parentElement.replaceChildren();
     for (const item of this.cart.getAll()) {
@@ -189,7 +205,20 @@ class CartList {
       this.listItem.textContent = item.title;
       this.listItem.classList.add("cartItem");
       parentElement.append(this.listItem);
+      this.subscribe();
     }
+  }
+
+  subscribe() {
+    this.listItem.addEventListener("click", this.handleClick);
+  }
+
+  unsubscribe() {
+    this.listItem.removeEventListener("click", this.handleClick);
+  }
+
+  handleClick(event) {
+    this.remove(event.target.textContent);
   }
 }
 
@@ -218,18 +247,8 @@ new MenuView(menu).render(
 const cartIcon = new CartIcon(document.querySelector(".cartIcon"), cart);
 cartIcon.subscribe();
 
+
+const cartCounter = new CartCounter(cart);
+
 const cartList = new CartList(cart);
 cartList.render(cartContent);
-
-
-/*
-
-Model
-^    ^
-|    |
-View |
-  ^  |
-  |  |
-Controller
-
-*/
