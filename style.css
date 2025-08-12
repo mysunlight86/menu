@@ -28,11 +28,6 @@ ul {
   flex-wrap: wrap;
 }
 
-.cartContent {
-  background-color: bisque;
-  width: 30%;
-}
-
 .menu {
   width: 75%;
   margin: 0 auto;
@@ -44,4 +39,17 @@ ul {
 
 .selection {
   background-color: burlywood;
+}
+
+.cartContent {
+  background-color: bisque;
+  width: 30%;
+}
+
+.orderCounter {
+  display: none;
+  border-radius: 45%;
+  background-color: chocolate;
+  color: white;
+  padding: 5px 10px;
 }

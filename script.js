@@ -44,6 +44,7 @@ class Cart {
 class FoodCard {
   constructor(food) {
     this.food = food;
+    this.cartCounter = new CartCounter(cart);
   }
 
   render(parentElement) {
@@ -67,6 +68,7 @@ class FoodCard {
   handleClick = () => {
     cart.add(this.food);
     cartList.render(cartContent);
+    this.cartCounter.render(document.querySelector(".orderCounter"));
   }
 }
 
@@ -132,6 +134,21 @@ class MenuView {
     for (const category of categories) {
       const categoryView = new CategoryView(category, this.getCategoryItems(category));
       categoryView.render(parentElement, itemsContainer);
+    }
+  }
+}
+
+class CartCounter {
+  constructor(cart) {
+    this.cart = cart;
+  }
+
+  render(parentElement) {
+    parentElement.style.display = "none";
+    this.counter = this.cart.getCount();
+    parentElement.textContent = this.counter;
+    if (this.counter > 0) {
+      parentElement.style.display = "inline-block";
     }
   }
 }
