@@ -118,7 +118,8 @@ class MenuView {
     this.items = items;
   }
 
-  getCategories() { // TODO: move to model
+  getCategories() {
+    // TODO: move to model
     const categories = new Set();
     for (const item of this.items.getAll()) {
       categories.add(item.category);
@@ -126,7 +127,8 @@ class MenuView {
     return [...categories];
   }
 
-  getCategoryItems(category) { // TODO: move to model
+  getCategoryItems(category) {
+    // TODO: move to model
     const items = [];
     for (const item of this.items.getAll()) {
       if (item.category === category) items.push(item);
@@ -134,14 +136,14 @@ class MenuView {
     return items;
   }
 
-  render(parentElement, itemsContainer) { // TODO: rename parentElement -> element
+  render(element, itemsContainer) {
     const categories = this.getCategories();
     for (const category of categories) {
       const categoryView = new CategoryView(
         category,
         this.getCategoryItems(category)
       );
-      categoryView.render(parentElement, itemsContainer);
+      categoryView.render(element, itemsContainer);
     }
   }
 }
@@ -152,25 +154,24 @@ class CartIconView {
     this.handleclick = this.handleclick.bind(this);
   }
 
-  render(parentElement, counterElement) {
-    this.parentElement = parentElement;
+  render(element, counterElement) {
+    this.element = element;
     const counter = this.cart.getCount();
     counterElement.textContent = counter;
     if (counter > 0) {
       counterElement.style.display = "inline-block";
     } else {
-      counterElement.style.display = 'none';
+      counterElement.style.display = "none";
     }
     this.subscribe();
   }
 
-
   subscribe() {
-    this.parentElement.addEventListener("click", this.handleclick);
+    this.element.addEventListener("click", this.handleclick);
   }
 
   unsubscribe() {
-    this.parentElement.removeEventListener("click", this.handleclick);
+    this.element.removeEventListener("click", this.handleclick);
   }
 
   handleclick() {
@@ -183,7 +184,8 @@ class CartListView {
     this.cart = cart;
   }
 
-  getElementByTitle(title) { // TODO: move to model >> this.cart.removeByTitle(title)
+  getElementByTitle(title) {
+    // TODO: move to model >> this.cart.removeByTitle(title)
     for (const item of this.cart.getAll()) {
       if (item.title === title.trim()) return item;
     }
@@ -214,7 +216,7 @@ class CartListView {
   }
 
   toggleVisibility() {
-    this.parentElement.classList.toggle('hidden');
+    this.parentElement.classList.toggle("hidden");
   }
 
   subscribe() {
@@ -227,7 +229,7 @@ class CartListView {
 
   handleClick = (event) => {
     this.remove(event.target.textContent);
-  }
+  };
 }
 
 // Initialization
@@ -238,8 +240,8 @@ const cartIconElement = document.querySelector(".cartIcon");
 const orderCounterElement = document.querySelector(".orderCounter");
 const cartContentElement = document.querySelector(".cartContent");
 
-const cart = new Cart();
 const menu = new Menu();
+const cart = new Cart();
 
 menu.add(new Food("Вода", "Напитки"));
 menu.add(new Food("Сок", "Напитки"));
@@ -251,10 +253,7 @@ menu.add(new Food("Пудинг", "Десерты"));
 menu.add(new Food("Йогурт", "Десерты"));
 menu.add(new Food("Мороженое", "Десерты"));
 
-new MenuView(menu).render(
-  optionsElement,
-  selectionElement
-);
+new MenuView(menu).render(optionsElement, selectionElement);
 
 const cartIcon = new CartIconView(cart);
 cartIcon.render(cartIconElement, orderCounterElement);
