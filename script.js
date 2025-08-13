@@ -47,8 +47,7 @@ class Cart {
 
 // View and Controllers
 
-// TODO: rename view classes *View
-class FoodCard {
+class FoodCardView {
   constructor(food) {
     this.food = food;
   }
@@ -108,7 +107,7 @@ class CategoryView {
     // TODO: unsubscribe other elements
     this.itemsContainer.innerHTML = "";
     for (let i = 0; i < this.items.length; i++) {
-      const card = new FoodCard(this.items[i]);
+      const card = new FoodCardView(this.items[i]);
       card.render(this.itemsContainer);
     }
   }
@@ -147,7 +146,7 @@ class MenuView {
   }
 }
 
-class CartIcon {
+class CartIconView {
   constructor(cart) {
     this.cart = cart;
     this.handleclick = this.handleclick.bind(this);
@@ -179,7 +178,7 @@ class CartIcon {
   }
 }
 
-class CartList {
+class CartListView {
   constructor(cart) {
     this.cart = cart;
   }
@@ -254,8 +253,8 @@ new MenuView(menu).render(
   document.querySelector(".selection")
 );
 
-const cartIcon = new CartIcon(cart);
+const cartIcon = new CartIconView(cart);
 cartIcon.render(document.querySelector(".cartIcon"), document.querySelector(".orderCounter"));
 
-const cartList = new CartList(cart);
+const cartList = new CartListView(cart);
 cartList.render(cartContent);
