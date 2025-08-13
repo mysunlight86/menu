@@ -15,7 +15,7 @@ class Menu {
   add(food) {
     this.items.push(food);
   }
-  
+
   getCategories() {
     const categories = new Set();
     for (const item of this.getAll()) {
@@ -46,10 +46,15 @@ class Cart {
     this.items.push(item);
   }
 
-  remove(item) {
-    const itemIndex = this.items.indexOf(item);
-    if (itemIndex === -1) return;
-    this.items.splice(itemIndex, 1);
+  removeByTitle(title) {
+    for (const item of this.items) {
+      if (item.title === title.trim()) {
+        const itemIndex = this.items.indexOf(item);
+        if (itemIndex === -1) return;
+        this.items.splice(itemIndex, 1);
+      }
+    }
+    return null;
   }
 
   getAll() {
@@ -182,17 +187,8 @@ class CartListView {
     this.cart = cart;
   }
 
-  getElementByTitle(title) {
-    // TODO: move to model >> this.cart.removeByTitle(title)
-    for (const item of this.cart.getAll()) {
-      if (item.title === title.trim()) return item;
-    }
-    return null;
-  }
-
   remove(itemTitle) {
-    const item = this.getElementByTitle(itemTitle);
-    this.cart.remove(item);
+    this.cart.removeByTitle(itemTitle);
     this.render(this.parentElement);
     cartIcon.render(cartIconElement, orderCounterElement);
   }
