@@ -78,76 +78,19 @@ class FoodCardView {
     this.element.textContent = this.food.title;
     this.element.classList.add("item");
     parentElement.append(this.element);
-    this.subscribe();
   }
-
-  subscribe() {
-    this.element.addEventListener("click", this.handleClick);
-  }
-
-  unsubscribe() {
-    this.element.removeEventListener("click", this.handleClick);
-  }
-
-  // Method 2
-
-  handleClick = () => {
-    cart.add(this.food);
-    cartList.render(cartContentElement);
-    cartIcon.render(cartIconElement, orderCounterElement);
-  };
 }
 
 class CategoryView {
-  constructor(title, items) {
+  constructor(title) {
     this.title = title;
-    this.items = items;
-
-    // Method 1
-    this.handleClick = this.handleClick.bind(this);
   }
 
-  render(parentElement, itemsContainer) {
-    this.itemsContainer = itemsContainer;
-    this.listItem = document.createElement("li");
-    this.listItem.textContent = this.title;
-    this.listItem.classList.add("option");
-    parentElement.append(this.listItem);
-    this.subscribe();
-  }
-
-  subscribe() {
-    this.listItem.addEventListener("click", this.handleClick);
-  }
-
-  unsubscribe() {
-    this.listItem.removeEventListener("click", this.handleClick);
-  }
-
-  handleClick() {
-    // TODO: unsubscribe other elements
-    this.itemsContainer.innerHTML = "";
-    for (let i = 0; i < this.items.length; i++) {
-      const card = new FoodCardView(this.items[i]);
-      card.render(this.itemsContainer);
-    }
-  }
-}
-
-class MenuView {
-  constructor(items) {
-    this.items = items;
-  }
-
-  render(element, itemsContainer) {
-    const categories = menu.getCategories();
-    for (const category of categories) {
-      const categoryView = new CategoryView(
-        category,
-        menu.getCategoryItems(category)
-      );
-      categoryView.render(element, itemsContainer);
-    }
+  render(parentElement) {
+    this.element = document.createElement("li");
+    this.element.textContent = this.title;
+    this.element.classList.add("option");
+    parentElement.append(this.element);
   }
 }
 
@@ -226,13 +169,94 @@ class CartListView {
   };
 }
 
+// Controllers
+
+class FoodCardController {
+  constructor(food, cardView, cart, cartView, cartIconView) {
+    this.food = food;
+    this.cardView = cardView;
+    this.cart = cart;
+    this.cartView = cartView;
+    this.cartIconView = cartIconView;
+  }
+
+  render(parentElement) {
+    this.cardView.render(parentElement);
+    this.cardView.element.addEventListener("click", this.handleClick);
+  }
+
+  destroy() {
+    this.cardView.element.removeEventListener("click", this.handleClick);
+  }
+
+  handleClick = () => {
+    this.cart.add(this.food);
+    this.cartView.render(cartContentElement);
+    this.cartIconView.render(cartIconElement, orderCounterElement);
+  }
+}
+
+class CategoryController {
+  constructor(items, categoryView) {
+    this.categoryView = categoryView;
+    this.items = items;
+    this.cardsControllers = [];
+  }
+
+  render(parentElement, itemsContainer) {
+    this.itemsContainer = itemsContainer;
+    this.categoryView.render(parentElement);
+    this.categoryView.element.addEventListener("click", this.handleClick);
+  }
+
+  destroy() {
+    this.categoryView.element.removeEventListener("click", this.handleClick);
+  }
+
+  renderCards() {
+    this.itemsContainer.innerHTML = "";
+    for (let i = 0; i < this.items.length; i++) {
+      const card = new FoodCardView(this.items[i]);
+      const cardController = new FoodCardController(
+        this.items[i],
+        card,
+        cart,
+        cartList,
+        cartIcon
+      );
+      cardController.render(this.itemsContainer);
+    }
+  }
+
+  handleClick = () => {
+    this.renderCards();
+  }
+}
+
+class MenuController {
+  constructor(menu) {
+    this.menu = menu;
+  }
+
+  render(element, itemsContainer) {
+    const categories = this.menu.getCategories();
+    for (const category of categories) {
+      const items = this.menu.getCategoryItems(category);
+      const categoryView = new CategoryView(category);
+      const categoryController = new CategoryController(items, categoryView);
+      categoryController.render(element, itemsContainer);
+    }
+  }
+}
+
+
 // Initialization
 
-const optionsElement = document.querySelector(".options");
-const selectionElement = document.querySelector(".selection");
+const optionsElement = document.querySelector(".options"); // categories
+const selectionElement = document.querySelector(".selection"); // menu items
 const cartIconElement = document.querySelector(".cartIcon");
 const orderCounterElement = document.querySelector(".orderCounter");
-const cartContentElement = document.querySelector(".cartContent");
+const cartContentElement = document.querySelector(".cartContent"); // cart
 
 const menu = new Menu();
 const cart = new Cart();
@@ -247,7 +271,7 @@ menu.add(new Food("Пудинг", "Десерты"));
 menu.add(new Food("Йогурт", "Десерты"));
 menu.add(new Food("Мороженое", "Десерты"));
 
-new MenuView(menu).render(optionsElement, selectionElement);
+new MenuController(menu).render(optionsElement, selectionElement);
 
 const cartIcon = new CartIconView(cart);
 cartIcon.render(cartIconElement, orderCounterElement);
