@@ -72,8 +72,8 @@ class FoodCardView {
 
   handleClick = () => {
     cart.add(this.food);
-    cartList.render(cartContent);
-    cartIcon.render(document.querySelector(".cartIcon"), document.querySelector(".orderCounter"));
+    cartList.render(cartContentElement);
+    cartIcon.render(cartIconElement, orderCounterElement);
   };
 }
 
@@ -194,7 +194,7 @@ class CartListView {
     const item = this.getElementByTitle(itemTitle);
     this.cart.remove(item);
     this.render(this.parentElement);
-    cartIcon.render(document.querySelector(".cartIcon"), document.querySelector(".orderCounter"));
+    cartIcon.render(cartIconElement, orderCounterElement);
   }
 
   render(parentElement) {
@@ -232,8 +232,11 @@ class CartListView {
 
 // Initialization
 
-// TODO: move here all querySelector
-const cartContent = document.querySelector(".cartContent");
+const optionsElement = document.querySelector(".options");
+const selectionElement = document.querySelector(".selection");
+const cartIconElement = document.querySelector(".cartIcon");
+const orderCounterElement = document.querySelector(".orderCounter");
+const cartContentElement = document.querySelector(".cartContent");
 
 const cart = new Cart();
 const menu = new Menu();
@@ -249,12 +252,12 @@ menu.add(new Food("Йогурт", "Десерты"));
 menu.add(new Food("Мороженое", "Десерты"));
 
 new MenuView(menu).render(
-  document.querySelector(".options"),
-  document.querySelector(".selection")
+  optionsElement,
+  selectionElement
 );
 
 const cartIcon = new CartIconView(cart);
-cartIcon.render(document.querySelector(".cartIcon"), document.querySelector(".orderCounter"));
+cartIcon.render(cartIconElement, orderCounterElement);
 
 const cartList = new CartListView(cart);
-cartList.render(cartContent);
+cartList.render(cartContentElement);
