@@ -15,6 +15,22 @@ class Menu {
   add(food) {
     this.items.push(food);
   }
+  
+  getCategories() {
+    const categories = new Set();
+    for (const item of this.getAll()) {
+      categories.add(item.category);
+    }
+    return [...categories];
+  }
+
+  getCategoryItems(category) {
+    const categoryItems = [];
+    for (const item of this.getAll()) {
+      if (item.category === category) categoryItems.push(item);
+    }
+    return categoryItems;
+  }
 
   getAll() {
     return this.items;
@@ -118,30 +134,12 @@ class MenuView {
     this.items = items;
   }
 
-  getCategories() {
-    // TODO: move to model
-    const categories = new Set();
-    for (const item of this.items.getAll()) {
-      categories.add(item.category);
-    }
-    return [...categories];
-  }
-
-  getCategoryItems(category) {
-    // TODO: move to model
-    const items = [];
-    for (const item of this.items.getAll()) {
-      if (item.category === category) items.push(item);
-    }
-    return items;
-  }
-
   render(element, itemsContainer) {
-    const categories = this.getCategories();
+    const categories = menu.getCategories();
     for (const category of categories) {
       const categoryView = new CategoryView(
         category,
-        this.getCategoryItems(category)
+        menu.getCategoryItems(category)
       );
       categoryView.render(element, itemsContainer);
     }
