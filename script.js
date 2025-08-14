@@ -74,9 +74,9 @@ class FoodCardView {
   }
 
   render(parentElement) {
-    this.element = document.createElement("li");
+    this.element = document.createElement('li');
     this.element.textContent = this.food.title;
-    this.element.classList.add("item");
+    this.element.classList.add('item');
     parentElement.append(this.element);
   }
 }
@@ -87,9 +87,9 @@ class CategoryView {
   }
 
   render(parentElement) {
-    this.element = document.createElement("li");
+    this.element = document.createElement('li');
     this.element.textContent = this.title;
-    this.element.classList.add("option");
+    this.element.classList.add('option');
     parentElement.append(this.element);
   }
 }
@@ -102,22 +102,22 @@ class CartIconView {
 
   render(element, counterElement) {
     this.element = element;
-    const counter = this.cart.getCount();
-    counterElement.textContent = counter;
-    if (counter > 0) {
-      counterElement.style.display = "inline-block";
+    const count = this.cart.getCount();
+    counterElement.textContent = count;
+    if (count > 0) {
+      counterElement.style.display = 'inline-block';
     } else {
-      counterElement.style.display = "none";
+      counterElement.style.display = 'none';
     }
     this.subscribe();
   }
 
   subscribe() {
-    this.element.addEventListener("click", this.handleclick);
+    this.element.addEventListener('click', this.handleclick);
   }
 
   unsubscribe() {
-    this.element.removeEventListener("click", this.handleclick);
+    this.element.removeEventListener('click', this.handleclick);
   }
 
   handleclick() {
@@ -133,35 +133,35 @@ class CartListView {
   remove(itemTitle) {
     this.cart.removeByTitle(itemTitle);
     this.render(this.parentElement);
-    cartIcon.render(cartIconElement, orderCounterElement);
+    cartIcon.render(cartIconElement, orderCountElement);
   }
 
   render(parentElement) {
     this.parentElement = parentElement;
     parentElement.replaceChildren();
     for (const item of this.cart.getAll()) {
-      this.listItem = document.createElement("li");
+      this.listItem = document.createElement('li');
       this.listItem.textContent = item.title;
-      this.listItem.classList.add("cartItem");
+      this.listItem.classList.add('cartItem');
       parentElement.append(this.listItem);
       this.subscribe();
     }
 
     if (this.cart.getCount() === 0) {
-      parentElement.textContent = "Вы пока ничего не выбрали";
+      parentElement.textContent = 'Вы пока ничего не выбрали';
     }
   }
 
   toggleVisibility() {
-    this.parentElement.classList.toggle("hidden");
+    this.parentElement.classList.toggle('hidden');
   }
 
   subscribe() {
-    this.listItem.addEventListener("click", this.handleClick);
+    this.listItem.addEventListener('click', this.handleClick);
   }
 
   unsubscribe() {
-    this.listItem.removeEventListener("click", this.handleClick);
+    this.listItem.removeEventListener('click', this.handleClick);
   }
 
   handleClick = (event) => {
@@ -182,18 +182,18 @@ class FoodCardController {
 
   render(parentElement) {
     this.cardView.render(parentElement);
-    this.cardView.element.addEventListener("click", this.handleClick);
+    this.cardView.element.addEventListener('click', this.handleClick);
   }
 
   destroy() {
-    this.cardView.element.removeEventListener("click", this.handleClick);
+    this.cardView.element.removeEventListener('click', this.handleClick);
   }
 
   handleClick = () => {
     this.cart.add(this.food);
     this.cartView.render(cartContentElement);
-    this.cartIconView.render(cartIconElement, orderCounterElement);
-  }
+    this.cartIconView.render(cartIconElement, orderCountElement);
+  };
 }
 
 class CategoryController {
@@ -206,15 +206,15 @@ class CategoryController {
   render(parentElement, itemsContainer) {
     this.itemsContainer = itemsContainer;
     this.categoryView.render(parentElement);
-    this.categoryView.element.addEventListener("click", this.handleClick);
+    this.categoryView.element.addEventListener('click', this.handleClick);
   }
 
   destroy() {
-    this.categoryView.element.removeEventListener("click", this.handleClick);
+    this.categoryView.element.removeEventListener('click', this.handleClick);
   }
 
   renderCards() {
-    this.itemsContainer.innerHTML = "";
+    this.itemsContainer.innerHTML = '';
     for (let i = 0; i < this.items.length; i++) {
       const card = new FoodCardView(this.items[i]);
       const cardController = new FoodCardController(
@@ -230,7 +230,7 @@ class CategoryController {
 
   handleClick = () => {
     this.renderCards();
-  }
+  };
 }
 
 class MenuController {
@@ -249,32 +249,31 @@ class MenuController {
   }
 }
 
-
 // Initialization
 
-const optionsElement = document.querySelector(".options"); // categories
-const selectionElement = document.querySelector(".selection"); // menu items
-const cartIconElement = document.querySelector(".cartIcon");
-const orderCounterElement = document.querySelector(".orderCounter");
-const cartContentElement = document.querySelector(".cartContent"); // cart
+const categoriesElement = document.querySelector('.categories'); // categories
+const menuItemsElement = document.querySelector('.menuItems'); // menu items
+const cartIconElement = document.querySelector('.cartIcon');
+const orderCountElement = document.querySelector('.orderCount');
+const cartContentElement = document.querySelector('.cartContent'); // cart
 
 const menu = new Menu();
 const cart = new Cart();
 
-menu.add(new Food("Вода", "Напитки"));
-menu.add(new Food("Сок", "Напитки"));
-menu.add(new Food("Чай", "Напитки"));
-menu.add(new Food("Мимоза", "Салаты"));
-menu.add(new Food("Оливье", "Салаты"));
-menu.add(new Food("Цезарь", "Салаты"));
-menu.add(new Food("Пудинг", "Десерты"));
-menu.add(new Food("Йогурт", "Десерты"));
-menu.add(new Food("Мороженое", "Десерты"));
+menu.add(new Food('Вода', 'Напитки'));
+menu.add(new Food('Сок', 'Напитки'));
+menu.add(new Food('Чай', 'Напитки'));
+menu.add(new Food('Мимоза', 'Салаты'));
+menu.add(new Food('Оливье', 'Салаты'));
+menu.add(new Food('Цезарь', 'Салаты'));
+menu.add(new Food('Пудинг', 'Десерты'));
+menu.add(new Food('Йогурт', 'Десерты'));
+menu.add(new Food('Мороженое', 'Десерты'));
 
-new MenuController(menu).render(optionsElement, selectionElement);
+new MenuController(menu).render(categoriesElement, menuItemsElement);
 
 const cartIcon = new CartIconView(cart);
-cartIcon.render(cartIconElement, orderCounterElement);
+cartIcon.render(cartIconElement, orderCountElement);
 
 const cartList = new CartListView(cart);
 cartList.render(cartContentElement);
