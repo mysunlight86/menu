@@ -28,8 +28,24 @@ class Model {
     return this.menu;
   }
 
+  getItemByTitle(title) {
+    for (let i = 0; i < this.menu.length; i++) {
+      if (this.menu[i].title === title) {
+        return this.menu[i];
+      }
+    }
+    return null;
+  }
+
   addToCart(item) {
     this.cart.push(item);
+  }
+
+  addToCartByTitle(title) {
+    const item = this.getItemByTitle(title);
+    if (item) {
+      this.addToCart(item);
+    }
   }
 
   removeFromCartByTitle(title) {
@@ -90,21 +106,19 @@ class CategoriesTabsView {
   }
 }
 
-
-// TODO: Make as CategoryTabView
 class CartIconView {
-  constructor(cart) {
-    this.cart = cart;
+  constructor(element) {
+    this.element = element;
   }
 
-  render(element, countElement) {
-    this.element = element;
-    const count = this.cart.getCount();
-    countElement.textContent = count;
+  render(model) {
+    const count = model.getCartCount();
+    const counterElement = this.element.querySelector('.orderCount')
+    counterElement.textContent = count;
     if (count > 0) {
-      countElement.style.display = 'inline-block';
+      counterElement.style.display = 'inline-block';
     } else {
-      countElement.style.display = 'none';
+      counterElement.style.display = 'none';
     }
   }
 }
@@ -239,7 +253,6 @@ class MenuController {
   destroy() {
     const elements = categoriesElement.getElementsByClassName('option')
     for (let i = 0; i < elements.length; i++) {
-      const element = elements[i];
       elements[i].removeEventListener('click', this.handleTabClick);
     }
   }
@@ -250,28 +263,32 @@ class MenuController {
     for (const item of menuItems) {
       new FoodCardView(menuItemsElement).render(item);
     }
+
+    const elements = menuItemsElement.getElementsByClassName('item')
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].addEventListener('click', this.handleItemClick);
+    }
   }
 
   handleTabClick = (event) => {
     this.currentCategory = event.target.textContent.trim();
     this.renderItems();
   }
+
+  handleItemClick = (event) => {
+    const itemTitle = event.target.textContent.trim();
+    this.model.addToCartByTitle(itemTitle);
+    cartIconController.render();
+  }
 }
 
 class CartIconController {
-  constructor(element, cartIconView) {
-    this.element = element;
-    this.cartIconView = cartIconView;
-    this.handleClick = this.handleClick.bind(this);
+  constructor(model) {
+    this.model = model;
   }
 
-  render(countElement) {
-    this.cartIconView.render(this.element, countElement);
-    this.element.addEventListener('click', this.handleClick);
-  }
-
-  destroy() {
-    this.element.removeEventListener('click', this.handleClick);
+  render() {
+    new CartIconView(cartIconElement).render(this.model);
   }
 
   handleClick() {
@@ -334,6 +351,9 @@ model.add({ title: 'Мороженое', category: 'Десерты' });
 
 const controller = new MenuController(model);
 controller.render();
+
+const cartIconController = new CartIconController(model);
+cartIconController.render();
 
 
 
