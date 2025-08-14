@@ -258,7 +258,6 @@ class MenuController {
   }
 
   renderItems() {
-    menuItemsElement.replaceChildren();
     const menuItems = this.model.getCategoryItems(this.currentCategory);
     for (const item of menuItems) {
       new FoodCardView(menuItemsElement).render(item);
@@ -270,7 +269,16 @@ class MenuController {
     }
   }
 
+  destroyItems() {
+    const elements = menuItemsElement.getElementsByClassName('item')
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].removeEventListener('click', this.handleItemClick);
+    }
+    menuItemsElement.replaceChildren();
+  }
+
   handleTabClick = (event) => {
+    this.destroyItems();
     this.currentCategory = event.target.textContent.trim();
     this.renderItems();
   }
