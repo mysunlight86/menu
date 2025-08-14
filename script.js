@@ -221,18 +221,30 @@ class CategoryController {
 }
 
 class MenuController {
-  constructor(menu) {
-    this.menu = menu;
+  constructor(model) {
+    this.model = model;
   }
 
-  render(element, itemsContainer) {
-    const categories = this.menu.getCategories();
-    for (const category of categories) {
-      const items = this.menu.getCategoryItems(category);
-      const categoryView = new CategoryTabView(category);
-      const categoryController = new CategoryController(items, categoryView);
-      categoryController.render(element, itemsContainer);
+  render() {
+    new CategoriesTabsView(categoriesElement).render(this.model);
+
+    const elements = categoriesElement.getElementsByClassName('option')
+    for (let i = 0; i < elements.length; i++) {
+      const element = elements[i];
+      elements[i].addEventListener('click', this.handleTabClick);
     }
+  }
+
+  destroy() {
+    const elements = categoriesElement.getElementsByClassName('option')
+    for (let i = 0; i < elements.length; i++) {
+      const element = elements[i];
+      elements[i].removeEventListener('click', this.handleTabClick);
+    }
+  }
+
+  handleTabClick = (event) => {
+    console.log('Clicked ', event.target);
   }
 }
 
@@ -310,13 +322,8 @@ model.add({ title: 'Пудинг', category: 'Десерты' });
 model.add({ title: 'Йогурт', category: 'Десерты' });
 model.add({ title: 'Мороженое', category: 'Десерты' });
 
-const view = new CategoriesTabsView(categoriesElement);
-view.render(model);
-
-
-
-
-
+const controller = new MenuController(model);
+controller.render();
 
 
 
