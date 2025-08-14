@@ -80,6 +80,8 @@ class FoodCardView {
   }
 }
 
+// TODO: Create FoodCardListView, see CategoriesTabsView
+
 class CategoryTabView {
   constructor(container) {
     this.container = container;
@@ -172,68 +174,6 @@ class CartListView {
 
 // Controllers
 
-class FoodCardController {
-  constructor(food, cardView, cart, cartView, cartIconView) {
-    this.food = food;
-    this.cardView = cardView;
-    this.cart = cart;
-    this.cartView = cartView;
-    this.cartIconView = cartIconView;
-  }
-
-  render(parentElement) {
-    this.cardView.render(parentElement);
-    this.cardView.element.addEventListener('click', this.handleClick);
-  }
-
-  destroy() {
-    this.cardView.element.removeEventListener('click', this.handleClick);
-  }
-
-  handleClick = () => {
-    this.cart.add(this.food);
-    this.cartView.render(cartElement);
-    this.cartIconView.render(cartIconElement, orderCountElement);
-  };
-}
-
-class CategoryController {
-  constructor(items, categoryView) {
-    this.categoryView = categoryView;
-    this.items = items;
-    this.cardsControllers = [];
-  }
-
-  render(parentElement, itemsContainer) {
-    this.itemsContainer = itemsContainer;
-    this.categoryView.render(parentElement);
-    this.categoryView.element.addEventListener('click', this.handleClick);
-  }
-
-  destroy() {
-    this.categoryView.element.removeEventListener('click', this.handleClick);
-  }
-
-  renderCards() {
-    this.itemsContainer.innerHTML = '';
-    for (let i = 0; i < this.items.length; i++) {
-      const card = new FoodCardView(this.items[i]);
-      const cardController = new FoodCardController(
-        this.items[i],
-        card,
-        cart,
-        cartList,
-        cartIcon
-      );
-      cardController.render(this.itemsContainer);
-    }
-  }
-
-  handleClick = () => {
-    this.renderCards();
-  };
-}
-
 class MenuController {
   constructor(model) {
     this.currentCategory = '';
@@ -297,6 +237,7 @@ class CartIconController {
 
   render() {
     new CartIconView(cartIconElement).render(this.model);
+    // TODO: handle click and toggle cart
   }
 
   handleClick() {
@@ -304,6 +245,7 @@ class CartIconController {
   }
 }
 
+// TODO: Make als MenuController
 class CartListController {
   constructor(cart, cartListView) {
     this.cart = cart;
