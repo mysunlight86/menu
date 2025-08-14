@@ -222,6 +222,7 @@ class CategoryController {
 
 class MenuController {
   constructor(model) {
+    this.currentCategory = '';
     this.model = model;
   }
 
@@ -243,8 +244,17 @@ class MenuController {
     }
   }
 
+  renderItems() {
+    menuItemsElement.replaceChildren();
+    const menuItems = this.model.getCategoryItems(this.currentCategory);
+    for (const item of menuItems) {
+      new FoodCardView(menuItemsElement).render(item);
+    }
+  }
+
   handleTabClick = (event) => {
-    console.log('Clicked ', event.target);
+    this.currentCategory = event.target.textContent.trim();
+    this.renderItems();
   }
 }
 
