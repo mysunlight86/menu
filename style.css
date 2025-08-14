@@ -18,11 +18,11 @@ ul {
   list-style-type: none;
 }
 
-.menu, .selection, .cartContent {
+.menu, .menuItems, .cart {
   display: flex;
 }
 
-.selection, .cartContent {
+.menuItems, .cart {
   row-gap: 15px;
   column-gap: 30px;
   flex-wrap: wrap;
@@ -33,24 +33,24 @@ ul {
   margin: 0 auto;
 }
 
-.options {
+.categories {
   background-color: coral;
 }
 
-.selection {
+.menuItems {
   background-color: burlywood;
 }
 
-.cartContent {
+.cart {
   background-color: bisque;
   width: 30%;
 }
 
-.cartContent.hidden {
+.cart.hidden {
   display: none;
 }
 
-.orderCounter {
+.orderCount {
   display: none;
   border-radius: 45%;
   background-color: chocolate;

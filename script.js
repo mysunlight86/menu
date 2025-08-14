@@ -97,31 +97,17 @@ class CategoryView {
 class CartIconView {
   constructor(cart) {
     this.cart = cart;
-    this.handleclick = this.handleclick.bind(this);
   }
 
-  render(element, counterElement) {
+  render(element, countElement) {
     this.element = element;
     const count = this.cart.getCount();
-    counterElement.textContent = count;
+    countElement.textContent = count;
     if (count > 0) {
-      counterElement.style.display = 'inline-block';
+      countElement.style.display = 'inline-block';
     } else {
-      counterElement.style.display = 'none';
+      countElement.style.display = 'none';
     }
-    this.subscribe();
-  }
-
-  subscribe() {
-    this.element.addEventListener('click', this.handleclick);
-  }
-
-  unsubscribe() {
-    this.element.removeEventListener('click', this.handleclick);
-  }
-
-  handleclick() {
-    cartList.toggleVisibility();
   }
 }
 
@@ -191,7 +177,7 @@ class FoodCardController {
 
   handleClick = () => {
     this.cart.add(this.food);
-    this.cartView.render(cartContentElement);
+    this.cartView.render(cartElement);
     this.cartIconView.render(cartIconElement, orderCountElement);
   };
 }
@@ -249,13 +235,34 @@ class MenuController {
   }
 }
 
+class CartIconController {
+  constructor(element, cartIconView) {
+    this.element = element;
+    this.cartIconView = cartIconView;
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  render(countElement) {
+    this.cartIconView.render(this.element, countElement);
+    this.element.addEventListener('click', this.handleClick);
+  }
+
+  destroy() {
+    this.element.removeEventListener('click', this.handleClick);
+  }
+
+  handleClick() {
+    cartList.toggleVisibility();
+  }
+}
+
 // Initialization
 
 const categoriesElement = document.querySelector('.categories'); // categories
 const menuItemsElement = document.querySelector('.menuItems'); // menu items
 const cartIconElement = document.querySelector('.cartIcon');
 const orderCountElement = document.querySelector('.orderCount');
-const cartContentElement = document.querySelector('.cartContent'); // cart
+const cartElement = document.querySelector('.cart'); // cart
 
 const menu = new Menu();
 const cart = new Cart();
@@ -273,7 +280,7 @@ menu.add(new Food('Мороженое', 'Десерты'));
 new MenuController(menu).render(categoriesElement, menuItemsElement);
 
 const cartIcon = new CartIconView(cart);
-cartIcon.render(cartIconElement, orderCountElement);
+new CartIconController(cartIconElement, cartIcon).render(orderCountElement);
 
 const cartList = new CartListView(cart);
-cartList.render(cartContentElement);
+cartList.render(cartElement);
