@@ -138,9 +138,11 @@ class CartListView {
     }
   }
 
-  /* toggleVisibility() {
+  toggleVisibility() {
     this.parentElement.classList.toggle('hidden');
   }
+
+  /*
 
   subscribe() {
     this.listItem.addEventListener('click', this.handleClick);
