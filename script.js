@@ -1,24 +1,16 @@
 // Model Classes
 
-class Food {
-  constructor(title, category) {
-    this.title = title;
-    this.category = category;
-  }
-}
-
-class Menu {
-  constructor() {
-    this.items = [];
-  }
+class Model {
+  menu = [];
+  cart = [];
 
   add(food) {
-    this.items.push(food);
+    this.menu.push(food);
   }
 
   getCategories() {
     const categories = new Set();
-    for (const item of this.getAll()) {
+    for (const item of this.menu) {
       categories.add(item.category);
     }
     return [...categories];
@@ -26,74 +18,80 @@ class Menu {
 
   getCategoryItems(category) {
     const categoryItems = [];
-    for (const item of this.getAll()) {
+    for (const item of this.menu) {
       if (item.category === category) categoryItems.push(item);
     }
     return categoryItems;
   }
 
-  getAll() {
-    return this.items;
-  }
-}
-
-class Cart {
-  constructor() {
-    this.items = [];
+  getAllItems() {
+    return this.menu;
   }
 
-  add(item) {
-    this.items.push(item);
+  addToCart(item) {
+    this.cart.push(item);
   }
 
-  removeByTitle(title) {
-    for (const item of this.items) {
-      if (item.title === title.trim()) {
-        const itemIndex = this.items.indexOf(item);
-        if (itemIndex === -1) return;
-        this.items.splice(itemIndex, 1);
+  removeFromCartByTitle(title) {
+    for (let i = 0; i < this.cart.length; i++) {
+      if (this.cart[i].title === title) {
+        this.cart.splice(i, 1);
       }
     }
-    return null;
   }
 
-  getAll() {
-    return this.items;
+  getAllItemsInCart() {
+    return this.cart;
   }
 
-  getCount() {
-    return this.items.length;
+  getCartCount() {
+    return this.cart.length;
   }
 }
 
 // View and Controllers
 
 class FoodCardView {
-  constructor(food) {
-    this.food = food;
+  constructor(container) {
+    this.container = container;
   }
 
-  render(parentElement) {
+  render(model) {
     this.element = document.createElement('li');
-    this.element.textContent = this.food.title;
+    this.element.textContent = model.title;
     this.element.classList.add('item');
-    parentElement.append(this.element);
+    this.container.append(this.element);
   }
 }
 
-class CategoryView {
-  constructor(title) {
-    this.title = title;
+class CategoryTabView {
+  constructor(container) {
+    this.container = container;
   }
 
-  render(parentElement) {
+  render(model) {
     this.element = document.createElement('li');
-    this.element.textContent = this.title;
+    this.element.textContent = model;
     this.element.classList.add('option');
-    parentElement.append(this.element);
+    this.container.append(this.element);
   }
 }
 
+class CategoriesTabsView {
+  constructor(tabsContainer) {
+    this.tabsContainer = tabsContainer;
+  }
+
+  render(model) {
+    const categories = model.getCategories();
+    for (const category of categories) {
+      new CategoryTabView(this.tabsContainer).render(category);
+    }
+  }
+}
+
+
+// TODO: Make as CategoryTabView
 class CartIconView {
   constructor(cart) {
     this.cart = cart;
@@ -111,6 +109,7 @@ class CartIconView {
   }
 }
 
+// TODO: Make as CategoryTabView
 class CartListView {
   constructor(cart) {
     this.cart = cart;
@@ -230,7 +229,7 @@ class MenuController {
     const categories = this.menu.getCategories();
     for (const category of categories) {
       const items = this.menu.getCategoryItems(category);
-      const categoryView = new CategoryView(category);
+      const categoryView = new CategoryTabView(category);
       const categoryController = new CategoryController(items, categoryView);
       categoryController.render(element, itemsContainer);
     }
@@ -299,24 +298,33 @@ const cartIconElement = document.querySelector('.cartIcon');
 const orderCountElement = document.querySelector('.orderCount');
 const cartElement = document.querySelector('.cart'); // cart
 
-const menu = new Menu();
-const cart = new Cart();
+const model = new Model();
 
-menu.add(new Food('Вода', 'Напитки'));
-menu.add(new Food('Сок', 'Напитки'));
-menu.add(new Food('Чай', 'Напитки'));
-menu.add(new Food('Мимоза', 'Салаты'));
-menu.add(new Food('Оливье', 'Салаты'));
-menu.add(new Food('Цезарь', 'Салаты'));
-menu.add(new Food('Пудинг', 'Десерты'));
-menu.add(new Food('Йогурт', 'Десерты'));
-menu.add(new Food('Мороженое', 'Десерты'));
+model.add({ title: 'Сок', category: 'Напитки' });
+model.add({ title: 'Вода', category: 'Напитки' });
+model.add({ title: 'Чай', category: 'Напитки' });
+model.add({ title: 'Мимоза', category: 'Салаты' });
+model.add({ title: 'Оливье', category: 'Салаты' });
+model.add({ title: 'Цезарь', category: 'Салаты' });
+model.add({ title: 'Пудинг', category: 'Десерты' });
+model.add({ title: 'Йогурт', category: 'Десерты' });
+model.add({ title: 'Мороженое', category: 'Десерты' });
 
-new MenuController(menu).render(categoriesElement, menuItemsElement);
+const view = new CategoriesTabsView(categoriesElement);
+view.render(model);
 
-const cartIcon = new CartIconView(cart);
-new CartIconController(cartIconElement, cartIcon).render(orderCountElement);
 
-const cartList = new CartListView(cart);
-// cartList.render(cartElement); */
-new CartListController(cart, cartList).render(cartElement);
+
+
+
+
+
+
+// new MenuController(menu).render(categoriesElement, menuItemsElement);
+
+// const cartIcon = new CartIconView(cart);
+// new CartIconController(cartIconElement, cartIcon).render(orderCountElement);
+
+// const cartList = new CartListView(cart);
+// // cartList.render(cartElement); */
+// new CartListController(cart, cartList).render(cartElement);
