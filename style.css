@@ -18,19 +18,14 @@ ul {
   list-style-type: none;
 }
 
-.menu, .selection, .cartContent {
+.menu, .menuItems, .cart {
   display: flex;
 }
 
-.selection, .cartContent {
+.menuItems, .cart {
   row-gap: 15px;
   column-gap: 30px;
   flex-wrap: wrap;
-}
-
-.cartContent {
-  background-color: bisque;
-  width: 30%;
 }
 
 .menu {
@@ -38,10 +33,27 @@ ul {
   margin: 0 auto;
 }
 
-.options {
+.categories {
   background-color: coral;
 }
 
-.selection {
+.menuItems {
   background-color: burlywood;
+}
+
+.cart {
+  background-color: bisque;
+  width: 30%;
+}
+
+.cart.hidden {
+  display: none;
+}
+
+.orderCount {
+  display: none;
+  border-radius: 45%;
+  background-color: chocolate;
+  color: white;
+  padding: 5px 10px;
 }
