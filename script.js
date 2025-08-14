@@ -116,11 +116,11 @@ class CartListView {
     this.cart = cart;
   }
 
-  remove(itemTitle) {
+  /* remove(itemTitle) {
     this.cart.removeByTitle(itemTitle);
     this.render(this.parentElement);
     cartIcon.render(cartIconElement, orderCountElement);
-  }
+  } */
 
   render(parentElement) {
     this.parentElement = parentElement;
@@ -129,8 +129,8 @@ class CartListView {
       this.listItem = document.createElement('li');
       this.listItem.textContent = item.title;
       this.listItem.classList.add('cartItem');
-      parentElement.append(this.listItem);
-      this.subscribe();
+      this.parentElement.append(this.listItem);
+      // this.subscribe();
     }
 
     if (this.cart.getCount() === 0) {
@@ -138,7 +138,7 @@ class CartListView {
     }
   }
 
-  toggleVisibility() {
+  /* toggleVisibility() {
     this.parentElement.classList.toggle('hidden');
   }
 
@@ -152,7 +152,7 @@ class CartListView {
 
   handleClick = (event) => {
     this.remove(event.target.textContent);
-  };
+  }; */
 }
 
 // Controllers
@@ -256,6 +256,39 @@ class CartIconController {
   }
 }
 
+class CartListController {
+  constructor(cart, cartListView) {
+    this.cart = cart;
+    this.cartListView = cartListView;
+  }
+
+  remove(itemTitle) {
+    this.cart.removeByTitle(itemTitle);
+    this.cartListView.render(this.parentElement);
+    cartIcon.render(cartIconElement, orderCountElement);
+  }
+
+  toggleVisibility() {
+    this.parentElement.classList.toggle('hidden');
+  }
+
+  render(parentElement) {
+    this.parentElement = parentElement;
+    this.cartListView.render(this.parentElement);
+    if (this.cart.getCount() > 0) {
+      this.cartListView.listItem.addEventListener('click', this.handleClick);
+    }
+  }
+
+  destroy() {
+    this.cartListView.listItem.removeEventListener('click', this.handleClick);
+  }
+
+  handleClick = (event) => {
+    this.remove(event.target.textContent);
+  };
+}
+
 // Initialization
 
 const categoriesElement = document.querySelector('.categories'); // categories
@@ -283,4 +316,5 @@ const cartIcon = new CartIconView(cart);
 new CartIconController(cartIconElement, cartIcon).render(orderCountElement);
 
 const cartList = new CartListView(cart);
-cartList.render(cartElement);
+// cartList.render(cartElement); */
+new CartListController(cart, cartList).render(cartElement);
