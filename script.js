@@ -90,7 +90,7 @@ class CategoryTabView {
   render(model) {
     this.element = document.createElement('li');
     this.element.textContent = model;
-    this.element.classList.add('option');
+    this.element.classList.add('category');
     this.container.append(this.element);
   }
 }
@@ -183,7 +183,7 @@ class MenuController {
   render() {
     new CategoriesTabsView(categoriesElement).render(this.model);
 
-    const elements = categoriesElement.getElementsByClassName('option')
+    const elements = categoriesElement.getElementsByClassName('category')
     for (let i = 0; i < elements.length; i++) {
       const element = elements[i];
       elements[i].addEventListener('click', this.handleTabClick);
@@ -191,7 +191,7 @@ class MenuController {
   }
 
   destroy() {
-    const elements = categoriesElement.getElementsByClassName('option')
+    const elements = categoriesElement.getElementsByClassName('category')
     for (let i = 0; i < elements.length; i++) {
       elements[i].removeEventListener('click', this.handleTabClick);
     }
