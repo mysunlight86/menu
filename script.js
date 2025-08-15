@@ -80,7 +80,17 @@ class FoodCardView {
   }
 }
 
-// TODO: Create FoodCardListView, see CategoriesTabsView
+class FoodCardListView {
+  constructor(cardsContainer) {
+    this.cardsContainer = cardsContainer;
+  }
+
+  render(model) {
+    for (const item of model) {
+      new FoodCardView(this.cardsContainer).render(item);
+    }
+  }
+}
 
 class CategoryTabView {
   constructor(container) {
@@ -185,7 +195,6 @@ class MenuController {
 
     const elements = categoriesElement.getElementsByClassName('category')
     for (let i = 0; i < elements.length; i++) {
-      const element = elements[i];
       elements[i].addEventListener('click', this.handleTabClick);
     }
   }
@@ -199,9 +208,7 @@ class MenuController {
 
   renderItems() {
     const menuItems = this.model.getCategoryItems(this.currentCategory);
-    for (const item of menuItems) {
-      new FoodCardView(menuItemsElement).render(item);
-    }
+    new FoodCardListView(menuItemsElement).render(menuItems);
 
     const elements = menuItemsElement.getElementsByClassName('item')
     for (let i = 0; i < elements.length; i++) {
