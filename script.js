@@ -200,16 +200,16 @@ class MenuController {
   }
 
   handleTabClick = (event) => {
-    this.destroy();
+    this.destroyItems();
     this.currentCategory = event.target.textContent.trim();
     this.renderItems();
   }
 
   handleItemClick = (event) => {
-    this.destroyItems();
     const itemTitle = event.target.textContent.trim();
     this.model.addToCartByTitle(itemTitle);
     cartIconController.render();
+    cartListController.render();
   }
 }
 
