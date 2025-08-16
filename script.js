@@ -125,7 +125,7 @@ class CartIconView {
 
   render(model) {
     const count = model.getCartCount();
-    const counterElement = this.element.querySelector('.orderCount')
+    const counterElement = this.element.querySelector('.orderCount');
     counterElement.textContent = count;
     if (count > 0) {
       counterElement.style.display = 'inline-block';
@@ -135,51 +135,26 @@ class CartIconView {
   }
 }
 
-// TODO: Make as CategoryTabView
 class CartListView {
-  constructor(cart) {
-    this.cart = cart;
+  constructor(parentElement) {
+    this.parentElement = parentElement;
   }
 
-  /* remove(itemTitle) {
-    this.cart.removeByTitle(itemTitle);
-    this.render(this.parentElement);
-    cartIcon.render(cartIconElement, orderCountElement);
-  } */
-
-  render(parentElement) {
-    this.parentElement = parentElement;
-    parentElement.replaceChildren();
-    for (const item of this.cart.getAll()) {
+  render(model) {
+    this.model = model;
+    const cartItems = this.model.getAllItemsInCart();
+    this.parentElement.replaceChildren();
+    for (const item of cartItems) {
       this.listItem = document.createElement('li');
       this.listItem.textContent = item.title;
       this.listItem.classList.add('cartItem');
       this.parentElement.append(this.listItem);
-      // this.subscribe();
     }
 
-    if (this.cart.getCount() === 0) {
-      parentElement.textContent = 'Вы пока ничего не выбрали';
+    if (this.model.getCartCount() === 0) {
+      this.parentElement.textContent = 'Вы пока ничего не выбрали';
     }
   }
-
-  toggleVisibility() {
-    this.parentElement.classList.toggle('hidden');
-  }
-
-  /*
-
-  subscribe() {
-    this.listItem.addEventListener('click', this.handleClick);
-  }
-
-  unsubscribe() {
-    this.listItem.removeEventListener('click', this.handleClick);
-  }
-
-  handleClick = (event) => {
-    this.remove(event.target.textContent);
-  }; */
 }
 
 // Controllers
@@ -247,6 +222,30 @@ class CartIconController {
     // TODO: handle click and toggle cart
   }
 
+  /* remove(itemTitle) {
+    this.cart.removeByTitle(itemTitle);
+    this.render(this.parentElement);
+    cartIcon.render(cartIconElement, orderCountElement);
+  } */
+
+  /* toggleVisibility() {
+    this.parentElement.classList.toggle('hidden');
+  } */
+
+  /*
+
+  subscribe() {
+    this.listItem.addEventListener('click', this.handleClick);
+  }
+
+  unsubscribe() {
+    this.listItem.removeEventListener('click', this.handleClick);
+  }
+
+  handleClick = (event) => {
+    this.remove(event.target.textContent);
+  }; */
+
   handleClick() {
     cartList.toggleVisibility();
   }
@@ -254,11 +253,15 @@ class CartIconController {
 
 // TODO: Make als MenuController
 class CartListController {
-  constructor(cart, cartListView) {
-    this.cart = cart;
-    this.cartListView = cartListView;
+  constructor(model) {
+    this.model = model;
   }
 
+  render() {
+    new CartListView(cartElement).render(this.model);
+  }
+
+  /* 
   remove(itemTitle) {
     this.cart.removeByTitle(itemTitle);
     this.cartListView.render(this.parentElement);
@@ -271,7 +274,6 @@ class CartListController {
 
   render(parentElement) {
     this.parentElement = parentElement;
-    this.cartListView.render(this.parentElement);
     if (this.cart.getCount() > 0) {
       this.cartListView.listItem.addEventListener('click', this.handleClick);
     }
@@ -283,16 +285,15 @@ class CartListController {
 
   handleClick = (event) => {
     this.remove(event.target.textContent);
-  };
+  }; */
 }
 
 // Initialization
 
-const categoriesElement = document.querySelector('.categories'); // categories
-const menuItemsElement = document.querySelector('.menuItems'); // menu items
+const categoriesElement = document.querySelector('.categories');
+const menuItemsElement = document.querySelector('.menuItems');
 const cartIconElement = document.querySelector('.cartIcon');
-const orderCountElement = document.querySelector('.orderCount');
-const cartElement = document.querySelector('.cart'); // cart
+const cartElement = document.querySelector('.cart');
 
 const model = new Model();
 
@@ -306,19 +307,11 @@ model.add({ title: 'Пудинг', category: 'Десерты' });
 model.add({ title: 'Йогурт', category: 'Десерты' });
 model.add({ title: 'Мороженое', category: 'Десерты' });
 
-const controller = new MenuController(model);
-controller.render();
+const menuController = new MenuController(model);
+menuController.render();
 
 const cartIconController = new CartIconController(model);
 cartIconController.render();
 
-
-
-// new MenuController(menu).render(categoriesElement, menuItemsElement);
-
-// const cartIcon = new CartIconView(cart);
-// new CartIconController(cartIconElement, cartIcon).render(orderCountElement);
-
-// const cartList = new CartListView(cart);
-// // cartList.render(cartElement); */
-// new CartListController(cart, cartList).render(cartElement);
+const cartListController = new CartListController(model);
+cartListController.render();
