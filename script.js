@@ -236,7 +236,6 @@ class CartIconController {
   };
 }
 
-// TODO: Make als MenuController
 class CartListController {
   constructor(model) {
     this.model = model;
@@ -244,29 +243,30 @@ class CartListController {
 
   render() {
     new CartListView(cartElement).render(this.model);
-  }
-
-  /* 
-  remove(itemTitle) {
-    this.cart.removeByTitle(itemTitle);
-    this.cartListView.render(this.parentElement);
-    cartIcon.render(cartIconElement, orderCountElement);
-  }
-
-  render(parentElement) {
-    this.parentElement = parentElement;
-    if (this.cart.getCount() > 0) {
-      this.cartListView.listItem.addEventListener('click', this.handleClick);
+    if (this.model.getCartCount() > 0) {
+      const elements = cartElement.getElementsByClassName('cartItem')
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].addEventListener('click', this.handleClick);
+      }
     }
   }
 
+  remove(title) {
+    this.model.removeFromCartByTitle(title);
+    cartIconController.render();
+    cartListController.render();
+  }
+
   destroy() {
-    this.cartListView.listItem.removeEventListener('click', this.handleClick);
+    const elements = cartElement.getElementsByClassName('cartItem')
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].removeEventListener('click', this.handleClick);
+    }
   }
 
   handleClick = (event) => {
     this.remove(event.target.textContent);
-  }; */
+  };
 }
 
 // Initialization
