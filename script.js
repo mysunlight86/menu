@@ -200,12 +200,13 @@ class MenuController {
   }
 
   handleTabClick = (event) => {
-    this.destroyItems();
+    this.destroy();
     this.currentCategory = event.target.textContent.trim();
     this.renderItems();
   }
 
   handleItemClick = (event) => {
+    this.destroyItems();
     const itemTitle = event.target.textContent.trim();
     this.model.addToCartByTitle(itemTitle);
     cartIconController.render();
@@ -219,36 +220,20 @@ class CartIconController {
 
   render() {
     new CartIconView(cartIconElement).render(this.model);
-    // TODO: handle click and toggle cart
+    cartIconElement.addEventListener('click', this.handleClick);
   }
 
-  /* remove(itemTitle) {
-    this.cart.removeByTitle(itemTitle);
-    this.render(this.parentElement);
-    cartIcon.render(cartIconElement, orderCountElement);
-  } */
-
-  /* toggleVisibility() {
-    this.parentElement.classList.toggle('hidden');
-  } */
-
-  /*
-
-  subscribe() {
-    this.listItem.addEventListener('click', this.handleClick);
+  destroy() {
+    cartIconElement.removeEventListener('click', this.handleClick);
   }
 
-  unsubscribe() {
-    this.listItem.removeEventListener('click', this.handleClick);
+  toggleVisibility() {
+    cartElement.classList.toggle('hidden');
   }
 
-  handleClick = (event) => {
-    this.remove(event.target.textContent);
-  }; */
-
-  handleClick() {
-    cartList.toggleVisibility();
-  }
+  handleClick = () => {
+    this.toggleVisibility();
+  };
 }
 
 // TODO: Make als MenuController
@@ -266,10 +251,6 @@ class CartListController {
     this.cart.removeByTitle(itemTitle);
     this.cartListView.render(this.parentElement);
     cartIcon.render(cartIconElement, orderCountElement);
-  }
-
-  toggleVisibility() {
-    this.parentElement.classList.toggle('hidden');
   }
 
   render(parentElement) {
