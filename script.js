@@ -125,7 +125,13 @@ class CartIconView {
 
   render(model) {
     const count = model.getCartCount();
-    const counterElement = this.element.querySelector('.orderCount');
+    let counterElement = this.element.querySelector('.orderCount');
+    if (!counterElement) {
+      counterElement = document.createElement('span');
+      counterElement.classList.add('orderCount');
+      this.element.append(counterElement);
+    }
+    
     counterElement.textContent = count;
     if (count > 0) {
       counterElement.style.display = 'inline-block';
