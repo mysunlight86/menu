@@ -74,9 +74,25 @@ class FoodCardView {
 
   render(model) {
     this.element = document.createElement('li');
-    this.element.textContent = model.title;
+    // this.element.textContent = model.title;
     this.element.classList.add('item');
     this.container.append(this.element);
+
+    const imgElement = document.createElement('img');
+    imgElement.src = model.url;
+    imgElement.alt = 'Продукт';
+    imgElement.classList.add('foodImage');
+    this.element.append(imgElement);
+
+    const titleElement = document.createElement('p');
+    titleElement.textContent = model.title;
+    titleElement.classList.add('foodTitle');
+    this.element.append(titleElement);
+
+    const priceElement = document.createElement('p');
+    priceElement.textContent = model.price;
+    priceElement.classList.add('foodPriсe');
+    this.element.append(priceElement);
   }
 }
 
@@ -212,6 +228,8 @@ class MenuController {
   }
 
   handleItemClick = (event) => {
+    // console.log(event.target);
+    // console.log(event);
     const itemTitle = event.target.textContent.trim();
     this.model.addToCartByTitle(itemTitle);
     cartIconController.render();
@@ -284,15 +302,15 @@ const cartElement = document.querySelector('.cart');
 
 const model = new Model();
 
-model.add({ title: 'Сок', category: 'Напитки' });
-model.add({ title: 'Вода', category: 'Напитки' });
-model.add({ title: 'Чай', category: 'Напитки' });
-model.add({ title: 'Мимоза', category: 'Салаты' });
-model.add({ title: 'Оливье', category: 'Салаты' });
-model.add({ title: 'Цезарь', category: 'Салаты' });
-model.add({ title: 'Пудинг', category: 'Десерты' });
-model.add({ title: 'Йогурт', category: 'Десерты' });
-model.add({ title: 'Мороженое', category: 'Десерты' });
+model.add({ title: 'Сок', category: 'Напитки', price: '1,5 у.е.', url: './images/food.png' });
+model.add({ title: 'Вода', category: 'Напитки', price: '0,5 у.е.', url: './images/food.png' });
+model.add({ title: 'Чай', category: 'Напитки', price: '1,0 у.е.', url: './images/food.png' });
+model.add({ title: 'Мимоза', category: 'Салаты', price: '3,0 у.е.', url: './images/food.png' });
+model.add({ title: 'Оливье', category: 'Салаты', price: '2,0 у.е.', url: './images/food.png' });
+model.add({ title: 'Цезарь', category: 'Салаты', price: '1,5 у.е.', url: './images/food.png' });
+model.add({ title: 'Пудинг', category: 'Десерты', price: '1,5 у.е.', url: './images/food.png' });
+model.add({ title: 'Йогурт', category: 'Десерты', price: '1,0 у.е.', url: './images/food.png' });
+model.add({ title: 'Мороженое', category: 'Десерты', price: '2,0 у.е.', url: './images/food.png' });
 
 const menuController = new MenuController(model);
 menuController.render();
