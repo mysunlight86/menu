@@ -1,71 +1,74 @@
 // Model Classes
 
-class Model {
-  menu = [];
-  cart = [];
+class Menu {
+  products = [];
 
-  add(food) {
-    this.menu.push(food);
+  add(product) {
+    this.products.push(product);
   }
 
   getCategories() {
     const categories = new Set();
-    for (const item of this.menu) {
-      categories.add(item.category);
+    for (const product of this.products) {
+      categories.add(product.category);
     }
     return [...categories];
   }
 
-  getCategoryItems(category) {
-    const categoryItems = [];
-    for (const item of this.menu) {
-      if (item.category === category) categoryItems.push(item);
+  getProductsByCategory() {
+    const categoryProducts = [];
+    for (const product of this.products) {
+      if (product.category === category) categoryProducts.push(product);
     }
-    return categoryItems;
+    return categoryProducts;
+  }
+  
+  getAllProducts() {
+    return this.products;
   }
 
-  getAllItems() {
-    return this.menu;
-  }
-
-  getItemByTitle(title) {
-    for (let i = 0; i < this.menu.length; i++) {
-      if (this.menu[i].title === title) {
-        return this.menu[i];
+  getProductByTitle(title) {
+    for (let i = 0; i < this.products.length; i++) {
+      if (this.products[i].title === title) {
+        return this.products[i];
       }
     }
     return null;
   }
+}
 
-  addToCart(item) {
-    this.cart.push(item);
+class Cart {
+  products = [];
+
+  add(product) {
+    this.products.push(product);
   }
 
-  addToCartByTitle(title) {
-    const item = this.getItemByTitle(title);
-    if (item) {
-      this.addToCart(item);
+  addProductByTitle(title) {
+    const product = menu.getProductByTitle(title); // create menu Model;
+    if (product) {
+      this.add(product);
     }
   }
 
-  removeFromCartByTitle(title) {
-    for (let i = 0; i < this.cart.length; i++) {
-      if (this.cart[i].title === title) {
-        this.cart.splice(i, 1);
+  removeProductByTitle(title) {
+    for (let i = 0; i < this.products.length; i++) {
+      if (this.products[i].title === title) {
+        this.products.splice(i, 1);
       }
     }
   }
 
-  getAllItemsInCart() {
-    return this.cart;
+  getAllProducts() {
+    return this.products;
   }
 
-  getCartCount() {
-    return this.cart.length;
+  getCount() {
+    return this.products.length;
   }
 }
 
-// View and Controllers
+// View
 
 class FoodCardView {
   constructor(container) {
@@ -74,7 +77,6 @@ class FoodCardView {
 
   render(model) {
     this.element = document.createElement('li');
-    // this.element.textContent = model.title;
     this.element.classList.add('item');
     this.container.append(this.element);
 
@@ -300,17 +302,19 @@ const menuItemsElement = document.querySelector('.menuItems');
 const cartIconElement = document.querySelector('.cartIcon');
 const cartElement = document.querySelector('.cart');
 
-const model = new Model();
+const menu = new Menu();
 
-model.add({ title: 'Сок', category: 'Напитки', price: '1,5 у.е.', url: './images/food.png' });
-model.add({ title: 'Вода', category: 'Напитки', price: '0,5 у.е.', url: './images/food.png' });
-model.add({ title: 'Чай', category: 'Напитки', price: '1,0 у.е.', url: './images/food.png' });
-model.add({ title: 'Мимоза', category: 'Салаты', price: '3,0 у.е.', url: './images/food.png' });
-model.add({ title: 'Оливье', category: 'Салаты', price: '2,0 у.е.', url: './images/food.png' });
-model.add({ title: 'Цезарь', category: 'Салаты', price: '1,5 у.е.', url: './images/food.png' });
-model.add({ title: 'Пудинг', category: 'Десерты', price: '1,5 у.е.', url: './images/food.png' });
-model.add({ title: 'Йогурт', category: 'Десерты', price: '1,0 у.е.', url: './images/food.png' });
-model.add({ title: 'Мороженое', category: 'Десерты', price: '2,0 у.е.', url: './images/food.png' });
+menu.add({ title: 'Сок', category: 'Напитки', price: '1,5 у.е.', url: './images/food.png' });
+menu.add({ title: 'Вода', category: 'Напитки', price: '0,5 у.е.', url: './images/food.png' });
+menu.add({ title: 'Чай', category: 'Напитки', price: '1,0 у.е.', url: './images/food.png' });
+menu.add({ title: 'Мимоза', category: 'Салаты', price: '3,0 у.е.', url: './images/food.png' });
+menu.add({ title: 'Оливье', category: 'Салаты', price: '2,0 у.е.', url: './images/food.png' });
+menu.add({ title: 'Цезарь', category: 'Салаты', price: '1,5 у.е.', url: './images/food.png' });
+menu.add({ title: 'Пудинг', category: 'Десерты', price: '1,5 у.е.', url: './images/food.png' });
+menu.add({ title: 'Йогурт', category: 'Десерты', price: '1,0 у.е.', url: './images/food.png' });
+menu.add({ title: 'Мороженое', category: 'Десерты', price: '2,0 у.е.', url: './images/food.png' });
+
+const cart = new Cart();
 
 const menuController = new MenuController(model);
 menuController.render();
