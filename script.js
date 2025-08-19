@@ -70,7 +70,7 @@ class Cart {
 
 // View
 
-class FoodCardView {
+class ProductCardView {
   constructor(container) {
     this.container = container;
   }
@@ -80,21 +80,11 @@ class FoodCardView {
     this.element.classList.add('item');
     this.container.append(this.element);
 
-    const imgElement = document.createElement('img');
-    imgElement.src = model.url;
-    imgElement.alt = 'Продукт';
-    imgElement.classList.add('foodImage');
-    this.element.append(imgElement);
-
-    const titleElement = document.createElement('p');
-    titleElement.textContent = model.title;
-    titleElement.classList.add('foodTitle');
-    this.element.append(titleElement);
-
-    const priceElement = document.createElement('p');
-    priceElement.textContent = model.price;
-    priceElement.classList.add('foodPriсe');
-    this.element.append(priceElement);
+    this.element.innerHTML = `
+      <img class="foodImage" src=${model.url} alt="Продукт">
+      <p class="foodTitle">${model.title}</p>
+      <p class="foodPrice">${model.price}</p>
+    `;
   }
 }
 
