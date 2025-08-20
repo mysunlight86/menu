@@ -19,12 +19,12 @@ ul {
 }
 
 .menu,
-.menuItems,
+.menuProducts,
 .cart {
   display: flex;
 }
 
-.menuItems,
+.menuProducts,
 .cart {
   row-gap: 15px;
   column-gap: 30px;
@@ -40,7 +40,7 @@ ul {
   background-color: coral;
 }
 
-.menuItems {
+.menuProducts {
   background-color: burlywood;
 }
 

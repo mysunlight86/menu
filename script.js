@@ -71,171 +71,189 @@ class Cart {
 // View
 
 class ProductCardView {
-  constructor(container) {
-    this.container = container;
+  constructor(product) {
+    this.product = product;
   }
 
-  render(model) {
+  render() {
     this.element = document.createElement('li');
-    this.element.classList.add('item');
-    this.container.append(this.element);
+    this.element.classList.add('product');
+    // this.container.append(this.element);
 
     this.element.innerHTML = `
       <img class="foodImage" src=${model.url} alt="Продукт">
       <p class="foodTitle">${model.title}</p>
       <p class="foodPrice">${model.price}</p>
     `;
+
+    return this.element;
   }
 }
 
-class FoodCardListView {
-  constructor(cardsContainer) {
-    this.cardsContainer = cardsContainer;
+class ProductCardListView {
+  constructor(productList) {
+    this.productList = productList;
   }
 
-  render(model) {
-    for (const item of model) {
-      new FoodCardView(this.cardsContainer).render(item);
+  render() {
+    this.element = document.querySelector('.menuProducts');
+    for (const product of this.productList) {
+      const el = new ProductCardView(product).render();
+      this.element.append(el);
     }
+    return this.element;
   }
 }
 
 class CategoryTabView {
-  constructor(container) {
-    this.container = container;
+  constructor(category) {
+    this.category = category;
   }
 
-  render(model) {
+  render() {
     this.element = document.createElement('li');
-    this.element.textContent = model;
+    this.element.textContent = this.category;
     this.element.classList.add('category');
-    this.container.append(this.element);
+    // this.container.append(this.element);
+    return this.element;
   }
 }
 
 class CategoriesTabsView {
-  constructor(tabsContainer) {
-    this.tabsContainer = tabsContainer;
+  constructor(categoryList) {
+    this.categoryList = categoryList;
   }
 
-  render(model) {
-    const categories = model.getCategories();
-    for (const category of categories) {
-      new CategoryTabView(this.tabsContainer).render(category);
+  render() {
+    this.element = document.querySelector('.categories');
+    for (const category of this.categoryList) {
+      // new CategoryTabView(category).render();
+      const el = new CategoryTabView(category).render();
+      this.element.append(el);
     }
+    return this.element;
   }
 }
 
 class CartIconView {
-  constructor(element) {
-    this.element = element;
+  constructor(cartCount) {
+    this.cartCount = cartCount;
   }
 
-  render(model) {
-    const count = model.getCartCount();
-    let counterElement = this.element.querySelector('.orderCount');
-    if (!counterElement) {
-      counterElement = document.createElement('span');
-      counterElement.classList.add('orderCount');
-      this.element.append(counterElement);
+  render() {
+    // const count = this.cart.getCartCount();
+    const cartIconElement = document.querySelector('.cartIcon');
+    this.element = cartIconElement.querySelector('.orderCount');
+    if (!this.element) {
+      this.element = document.createElement('span');
+      this.element.classList.add('orderCount');
+      // cartIconElement.append(counterElement);
     }
     
-    counterElement.textContent = count;
-    if (count > 0) {
-      counterElement.style.display = 'inline-block';
+    this.element.textContent = this.cartCount;
+    if (this.cartCount > 0) {
+      this.element.style.display = 'inline-block';
     } else {
-      counterElement.style.display = 'none';
+      this.element.style.display = 'none';
     }
+
+    return this.element;
   }
 }
 
 class CartListView {
-  constructor(parentElement) {
-    this.parentElement = parentElement;
+  constructor(cartProducts) {
+    this.cartProducts = cartProducts;
   }
 
-  render(model) {
-    this.model = model;
-    const cartItems = this.model.getAllItemsInCart();
-    this.parentElement.replaceChildren();
-    for (const item of cartItems) {
+  render() {
+    // const cartProducts = this.cart.getAllProducts();
+    this.element = document.querySelector('.cart');
+    this.element.replaceChildren();
+    for (const product of this.cartProducts) {
       this.listItem = document.createElement('li');
-      this.listItem.textContent = item.title;
-      this.listItem.classList.add('cartItem');
-      this.parentElement.append(this.listItem);
+      this.listItem.textContent = product.title;
+      this.listItem.classList.add('cartProduct');
+      this.element.append(this.listItem);
     }
 
-    if (this.model.getCartCount() === 0) {
-      this.parentElement.textContent = 'Вы пока ничего не выбрали';
+    if (cart.getCount() === 0) {
+      this.element.textContent = 'Вы пока ничего не выбрали';
     }
+
+    return this.element;
   }
 }
 
 // Controllers
 
 class MenuController {
-  constructor(model) {
+  constructor(menu) {
     this.currentCategory = '';
-    this.model = model;
+    this.menu = menu;
   }
 
   render() {
-    new CategoriesTabsView(categoriesElement).render(this.model);
+    const categories = this.menu.getCategories();
+    this.el = new CategoriesTabsView(categories).render();
 
-    const elements = categoriesElement.getElementsByClassName('category')
+    const elements = this.el.getElementsByClassName('category')
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener('click', this.handleTabClick);
     }
   }
 
   destroy() {
-    const elements = categoriesElement.getElementsByClassName('category')
+    const elements = this.el.getElementsByClassName('category')
     for (let i = 0; i < elements.length; i++) {
       elements[i].removeEventListener('click', this.handleTabClick);
     }
   }
 
-  renderItems() {
-    const menuItems = this.model.getCategoryItems(this.currentCategory);
-    new FoodCardListView(menuItemsElement).render(menuItems);
+  renderProducts() {
+    const menuProducts = this.menu.getProductsByCategory(this.currentCategory);
+    this.els = new ProductCardListView(menuProducts).render();
+    console.log(this.els);
 
-    const elements = menuItemsElement.getElementsByClassName('item')
+    const elements = menuProductsElement.getElementsByClassName('product');
     for (let i = 0; i < elements.length; i++) {
-      elements[i].addEventListener('click', this.handleItemClick);
+      elements[i].addEventListener('click', this.handleProductClick);
     }
   }
 
-  destroyItems() {
-    const elements = menuItemsElement.getElementsByClassName('item')
+  destroyProducts() {
+    console.log(this.els);
+    const elements = menuProductsElement.getElementsByClassName('product')
     for (let i = 0; i < elements.length; i++) {
-      elements[i].removeEventListener('click', this.handleItemClick);
+      elements[i].removeEventListener('click', this.handleProductClick);
     }
-    menuItemsElement.replaceChildren();
+    this.els.replaceChildren();
   }
 
   handleTabClick = (event) => {
-    this.destroyItems();
+    this.destroyProducts();
     this.currentCategory = event.target.textContent.trim();
-    this.renderItems();
+    this.renderProducts();
   }
 
-  handleItemClick = (event) => {
+  handleProductClick = (event) => {
     // console.log(event.target);
     // console.log(event);
-    const itemTitle = event.target.textContent.trim();
-    this.model.addToCartByTitle(itemTitle);
-    cartIconController.render();
+    const productTitle = event.target.textContent.trim();
+    cart.addProductByTitle(productTitle);
+    cartProductController.render();
     cartListController.render();
   }
 }
 
 class CartIconController {
-  constructor(model) {
-    this.model = model;
+  constructor(cart) {
+    this.cart = cart;
   }
 
   render() {
-    new CartIconView(cartIconElement).render(this.model);
+    this.element = new CartIconView(this.cart).render();
+    cartIconElement.append(this.element);
     cartIconElement.addEventListener('click', this.handleClick);
   }
 
@@ -244,7 +262,7 @@ class CartIconController {
   }
 
   toggleVisibility() {
-    cartElement.classList.toggle('hidden');
+    this.element.classList.toggle('hidden');
   }
 
   handleClick = () => {
@@ -253,14 +271,15 @@ class CartIconController {
 }
 
 class CartListController {
-  constructor(model) {
-    this.model = model;
+  constructor(cart) {
+    this.cart = cart;
   }
 
   render() {
-    new CartListView(cartElement).render(this.model);
-    if (this.model.getCartCount() > 0) {
-      const elements = cartElement.getElementsByClassName('cartItem')
+    const cartProducts = this.cart.getAllProducts();
+    this.element = new CartListView(cartProducts).render();
+    if (this.cart.getCount() > 0) {
+      const elements = this.element.getElementsByClassName('cartProduct')
       for (let i = 0; i < elements.length; i++) {
         elements[i].addEventListener('click', this.handleClick);
       }
@@ -268,13 +287,13 @@ class CartListController {
   }
 
   remove(title) {
-    this.model.removeFromCartByTitle(title);
+    this.cart.removeProductByTitle(title);
     cartIconController.render();
     cartListController.render();
   }
 
   destroy() {
-    const elements = cartElement.getElementsByClassName('cartItem')
+    const elements = cartElement.getElementsByClassName('cartProduct')
     for (let i = 0; i < elements.length; i++) {
       elements[i].removeEventListener('click', this.handleClick);
     }
@@ -287,10 +306,10 @@ class CartListController {
 
 // Initialization
 
-const categoriesElement = document.querySelector('.categories');
-const menuItemsElement = document.querySelector('.menuItems');
+// const categoriesElement = document.querySelector('.categories');
+const menuProductsElement = document.querySelector('.menuProducts');
 const cartIconElement = document.querySelector('.cartIcon');
-const cartElement = document.querySelector('.cart');
+// const cartElement = document.querySelector('.cart');
 
 const menu = new Menu();
 
@@ -306,11 +325,11 @@ menu.add({ title: 'Мороженое', category: 'Десерты', price: '2,0 
 
 const cart = new Cart();
 
-const menuController = new MenuController(model);
+const menuController = new MenuController(menu);
 menuController.render();
 
-const cartIconController = new CartIconController(model);
+const cartIconController = new CartIconController(cart);
 cartIconController.render();
 
-const cartListController = new CartListController(model);
+const cartListController = new CartListController(cart);
 cartListController.render();
