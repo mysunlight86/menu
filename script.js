@@ -164,23 +164,22 @@ class CartIconView {
 }
 
 class CartListView {
-  constructor(cartProducts) {
-    this.cartProducts = cartProducts;
+  constructor(cart) {
+    this.cart = cart;
   }
 
   render() {
-    // const cartProducts = this.cart.getAllProducts();
-    // this.element = document.querySelector('.cart');
-    cartElement.replaceChildren();
-    console.log(this.cartProducts);
-    for (const product of this.cartProducts) {
-      this.listItem = document.createElement('li');
-      this.listItem.textContent = product.title;
-      this.listItem.classList.add('cartProduct');
-      this.element.append(this.listItem);
+    const cartProducts = this.cart.getAllProducts();
+    this.element = document.querySelector('.cart');
+    this.element.replaceChildren();
+    for (const product of cartProducts) {
+      const listItem = document.createElement('li');
+      listItem.textContent = product.title;
+      listItem.classList.add('cartProduct');
+      this.element.append(listItem);
     }
 
-    if (cart.getCount() === 0) {
+    if (this.cart.getCount() === 0) {
       this.element.textContent = 'Вы пока ничего не выбрали';
     }
 
@@ -199,12 +198,9 @@ class MenuController {
 
   render() {
     const categoryList = this.menu.getCategories();
-    // console.log(categoryList);
     this.el = new CategoriesTabsView(categoryList).render();
-    // console.log(this.el);
 
     const elements = this.el.getElementsByClassName('category');
-    // console.log(elements);
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener('click', this.handleTabClick);
     }
@@ -219,21 +215,16 @@ class MenuController {
 
   renderProducts() {
     const menuProducts = this.menu.getProductsByCategory(this.currentCategory);
-    // console.log(menuProducts);
     this.els = new ProductCardListView(menuProducts).render();
-    // console.log(this.els);
 
     const elements = menuProductsElement.getElementsByClassName('product');
-    console.log(elements);
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener('click', this.handleProductClick);
     }
   }
 
   destroyProducts() {
-    // console.log(this.els);
     const elements = menuProductsElement.getElementsByClassName('product');
-    // console.log(elements);
     for (let i = 0; i < elements.length; i++) {
       elements[i].removeEventListener('click', this.handleProductClick);
     }
@@ -243,17 +234,14 @@ class MenuController {
   }
 
   handleTabClick = (event) => {
-    // console.log(event.target);
     this.destroyProducts();
     this.currentCategory = event.target.textContent.trim();
-    // console.log(this.currentCategory);
     this.renderProducts();
   }
 
   handleProductClick = (event) => {
     console.log(event.target);
     const productTitle = event.target.textContent.trim();
-    // console.log(productTitle);
     this.cart.addProductByTitle(productTitle);
     console.log(this.cart);
     cartIconController.render();
@@ -277,9 +265,7 @@ class CartIconController {
   }
 
   toggleVisibility() {
-    console.log(this.element);
     cartElement.classList.toggle('hidden');
-    console.log(cartElement);
   }
 
   handleClick = () => {
@@ -293,10 +279,7 @@ class CartListController {
   }
 
   render() {
-    const cartProducts = this.cart.getAllProducts();
-    console.log(cartProducts);
-    this.element = new CartListView(cartProducts).render();
-    console.log(this.element);
+    this.element = new CartListView(this.cart).render();
     if (this.cart.getCount() > 0) {
       const elements = this.element.getElementsByClassName('cartProduct')
       for (let i = 0; i < elements.length; i++) {
