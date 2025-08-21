@@ -70,7 +70,7 @@ class FoodCardListView {
 - [x] Удалить не используемые методы в модели
 - [x] Удалить метод `addProductByTitle` в моделе корзины
 - [x] Перенести логику в контроллер
-- [ ] ProductCardListView и CategoriesTabsView должны очистить DOM перед рендером новых элементов
+- [x] ProductCardListView и CategoriesTabsView должны очистить DOM перед рендером новых элементов
 - [x] CartIconView должна работать с DOM иконки (а не счёчика)
 - [x] CartListView должна работать с cart в качестве модели
 - [x] CartListView.listItem - не нужен, его можно сделать отдельной константой внутри цикла

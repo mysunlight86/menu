@@ -85,6 +85,7 @@ class ProductCardListView {
 
   render() {
     this.element = document.querySelector('.menuProducts');
+    this.element.replaceChildren();
     for (const product of this.productList) {
       const el = new ProductCardView(product).render();
       this.element.append(el);
@@ -113,6 +114,7 @@ class CategoriesTabsView {
 
   render() {
     this.element = document.querySelector('.categories');
+    this.element.replaceChildren();
     for (const category of this.categoryList) {
       const el = new CategoryTabView(category).render();
       this.element.append(el);
@@ -229,9 +231,7 @@ class CartIconController {
   }
 
   render() {
-    this.element = document.querySelector('.cartIcon');
-    const counterElement = new CartIconView(this.cart).render();
-    this.element.append(counterElement);
+    this.element = new CartIconView(this.cart).render();
     this.element.addEventListener('click', this.handleClick);
   }
 
