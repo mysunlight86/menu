@@ -128,19 +128,9 @@ class CartIconView {
 
   render() {
     const count = this.cart.getCount();
-    this.element = document.querySelector('.orderCount');
-    if (!this.element) {
-      this.element = document.createElement('span');
-      this.element.classList.add('orderCount');
-    }
-    
-    this.element.textContent = count;
-    if (count > 0) {
-      this.element.style.display = 'inline-block';
-    } else {
-      this.element.style.display = 'none';
-    }
-
+    const display = count > 0 ? 'inline-block' : 'none';
+    this.element = document.querySelector('.cartIcon');
+    this.element.innerHTML = `<span class="orderCount" style="display: ${display}">${count}</span>`
     return this.element;
   }
 }
