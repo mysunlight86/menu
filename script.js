@@ -22,10 +22,6 @@ class Menu {
     }
     return categoryProducts;
   }
-  
-  getAllProducts() {
-    return this.products;
-  }
 
   getProductByTitle(title) {
     for (let i = 0; i < this.products.length; i++) {
@@ -42,13 +38,6 @@ class Cart {
 
   add(product) {
     this.products.push(product);
-  }
-
-  addProductByTitle(title) {
-    const product = menu.getProductByTitle(title); // create menu Model;
-    if (product) {
-      this.add(product);
-    }
   }
 
   removeProductByTitle(title) {
@@ -139,8 +128,7 @@ class CartIconView {
 
   render() {
     const count = this.cart.getCount();
-    // const cartIconElement = document.querySelector('.cartIcon');
-    this.element = cartIconElement.querySelector('.orderCount');
+    this.element = document.querySelector('.orderCount');
     if (!this.element) {
       this.element = document.createElement('span');
       this.element.classList.add('orderCount');
@@ -235,7 +223,11 @@ class MenuController {
 
   handleProductClick = (event) => {
     const productTitle = event.target.textContent.trim();
-    this.cart.addProductByTitle(productTitle);
+    const product = this.menu.getProductByTitle(productTitle); 
+    if (product) {
+      this.cart.add(product);
+    }
+
     cartIconController.render();
     cartListController.render();
   }
@@ -247,13 +239,14 @@ class CartIconController {
   }
 
   render() {
-    this.element = new CartIconView(this.cart).render();
-    cartIconElement.append(this.element);
-    cartIconElement.addEventListener('click', this.handleClick);
+    this.element = document.querySelector('.cartIcon');
+    const counterElement = new CartIconView(this.cart).render();
+    this.element.append(counterElement);
+    this.element.addEventListener('click', this.handleClick);
   }
 
   destroy() {
-    cartIconElement.removeEventListener('click', this.handleClick);
+    this.element.removeEventListener('click', this.handleClick);
   }
 
   toggleVisibility() {
