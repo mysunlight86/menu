@@ -46,7 +46,6 @@ class Cart {
 
   addProductByTitle(title) {
     const product = menu.getProductByTitle(title); // create menu Model;
-    console.log(product);
     if (product) {
       this.add(product);
     }
@@ -79,8 +78,6 @@ class ProductCardView {
   render() {
     this.element = document.createElement('li');
     this.element.classList.add('product');
-    // this.container.append(this.element);
-    // console.log(this.product);
 
     this.element.innerHTML = `
       <img class="productImage" src=${this.product.url} alt="Продукт">
@@ -116,7 +113,6 @@ class CategoryTabView {
     this.element = document.createElement('li');
     this.element.textContent = this.category;
     this.element.classList.add('category');
-    // this.container.append(this.element);
     return this.element;
   }
 }
@@ -129,7 +125,6 @@ class CategoriesTabsView {
   render() {
     this.element = document.querySelector('.categories');
     for (const category of this.categoryList) {
-      // new CategoryTabView(category).render();
       const el = new CategoryTabView(category).render();
       this.element.append(el);
     }
@@ -149,7 +144,6 @@ class CartIconView {
     if (!this.element) {
       this.element = document.createElement('span');
       this.element.classList.add('orderCount');
-      // cartIconElement.append(counterElement);
     }
     
     this.element.textContent = count;
@@ -240,10 +234,8 @@ class MenuController {
   }
 
   handleProductClick = (event) => {
-    console.log(event.target);
     const productTitle = event.target.textContent.trim();
     this.cart.addProductByTitle(productTitle);
-    console.log(this.cart);
     cartIconController.render();
     cartListController.render();
   }
