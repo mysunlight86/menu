@@ -93,5 +93,41 @@ class CartIconView {
 
 ```
 
+Модель должна работать с продукатми по ID. Пример:
 
+```JavaScript
+menu.add({ id: 1, title: 'Сок', category: 'Напитки', price: '1,5 у.е.', url: './images/food.png' });
+menu.add({ id: 2, title: 'Вода', category: 'Напитки', price: '0,5 у.е.', url: './images/food.png' });
+```
+
+В DOM можно сохранить ID с помощью data-атрибутов.
+
+```JavaScript
+class ProductCardView {
+  render() {
+    this.element = document.createElement('li');
+    this.element.classList.add('product');
+    this.element.dataset.id = this.product.id;
+    // остальной код
+  }
+}
+
+```
+
+Прочитать data-атрибут в обработчике клика
+
+```JavaScript
+handleProductClick = (event) => {
+  const target = event.target;
+  const cardElement = target.closest('[data-id]');
+  const rawProductId = cardElement.dataset.id;
+  const productId = parseInt(rawProductId, 10);
+}
+```
+
+
+- [ ] Добавить ID к продуктам
+- [ ] В модель добавить Menu.getProductById(id)
+- [ ] В контролере меню, в обработчике клика по карточке продукта находить ID продукта
+- [ ] Для категорий в качестве ID использовать название самой категории
 
