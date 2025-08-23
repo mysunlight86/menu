@@ -215,7 +215,13 @@ class MenuController {
   }
 
   handleProductClick = (event) => {
-    const productTitle = event.target.textContent.trim();
+    const target = event.target;
+    const cardElement = target.closest('[data-id]');
+    const rawProductId = cardElement.dataset.id;
+    const productId = parseInt(rawProductId, 10);
+    console.log(productId);
+
+    const productTitle = target.textContent.trim();
     const product = this.menu.getProductByTitle(productTitle); 
     if (product) {
       this.cart.add(product);
