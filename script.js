@@ -67,6 +67,7 @@ class ProductCardView {
   render() {
     this.element = document.createElement('li');
     this.element.classList.add('product');
+    this.element.dataset.id = this.product.id;
 
     this.element.innerHTML = `
       <img class="productImage" src=${this.product.url} alt="Продукт">
