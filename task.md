@@ -125,9 +125,51 @@ handleProductClick = (event) => {
 }
 ```
 
+```JavaScript
+  renderProducts() {
+    const menuProducts = this.menu.getProductsByCategory(this.currentCategory);
+    this.els = new ProductCardListView(menuProducts).render();
+    this.els.addEventListener('click', this.handleProductClick);
+  }
+
+  destroyProducts() {
+    if (this.els) {
+      this.els.removeEventListener('click', this.handleProductClick);
+      this.els.replaceChildren();
+    }
+  }
+```
+
+Обработку кликов по карточкам будет делать CartController. Для этого, он подпишется на клик по меню. ProductCardListView создаётся при инициализации и сразу же делает рендер. Это нужно, чтобы у view был `this.element`. Инстанс ProductCardListView передаётся обоим контроллерам (MenuController, CartController). Первый использует ProductCardListView для заполнения карточками. Второй для подписки на событие клика.
+
+Для того, чтобы уменьшить связь контроллеров с DOM, добавим в View метод для подписки на клик.
+
+```JavaScript
+
+// View
+
+onClick(handler) {
+  this.element.addEventListener('click', handler);
+}
+
+// Controller
+
+render() {
+  this.listView.onClick(this.handleClick);
+}
+
+```
+
+
 
 - [x] Добавить ID к продуктам
 - [x] В модель добавить Menu.getProductById(id)
 - [x] В контролере меню, в обработчике клика по карточке продукта находить ID продукта
 - [x] Для категорий в качестве ID использовать название самой категории
-
+- [ ] Обработчик клика по товару и добавление в корзину происходит в контроллере корзины
+- [ ] Создание CategoriesTabsView происходит при инициализации и передается в MenuController через конструктор
+- [ ] Обработчик на клик по карточке должен быть подписан на всё меню, учесть клик мимо карточки
+- [ ] (не обязательно сейчас) обработчик клика по записи в корзине подписывается на весь список корзины
+- [ ] Сделать новый CartController
+- [ ] Перенести обработку клика по карточке в CartController
+- [ ] Добавить onClick тем View, которые поддерживаю обработку клика (меню, категория, иконка корзины, продукт в корзине)
