@@ -23,9 +23,9 @@ class Menu {
     return categoryProducts;
   }
 
-  getProductByTitle(title) {
+  getProductById(id) {
     for (let i = 0; i < this.products.length; i++) {
-      if (this.products[i].title === title) {
+      if (this.products[i].id === id) {
         return this.products[i];
       }
     }
@@ -219,10 +219,8 @@ class MenuController {
     const cardElement = target.closest('[data-id]');
     const rawProductId = cardElement.dataset.id;
     const productId = parseInt(rawProductId, 10);
-    console.log(productId);
 
-    const productTitle = target.textContent.trim();
-    const product = this.menu.getProductByTitle(productTitle); 
+    const product = this.menu.getProductById(productId); 
     if (product) {
       this.cart.add(product);
     }
