@@ -104,7 +104,7 @@ class CategoryTabView {
     this.element = document.createElement('li');
     this.element.textContent = this.category;
     this.element.classList.add('category');
-    this.element.dataset.category = this.category;
+    this.element.dataset.id = this.category;
     return this.element;
   }
 }
