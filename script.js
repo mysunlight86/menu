@@ -226,63 +226,58 @@ class MenuController {
       this.cart.add(product);
     }
 
-    cartIconController.render();
-    cartListController.render();
+    cartController.renderIcon();
+    cartController.renderCartList();
   }
 }
 
-class CartIconController {
+class CartController {
   constructor(cart) {
     this.cart = cart;
   }
 
-  render() {
-    this.element = new CartIconView(this.cart).render();
-    this.element.addEventListener('click', this.handleClick);
+  renderIcon() {
+    this.iconElement = new CartIconView(this.cart).render();
+    this.iconElement.addEventListener('click', this.handleIconClick);
   }
 
-  destroy() {
-    this.element.removeEventListener('click', this.handleClick);
+  destroyIconCart() {
+    this.iconElement.removeEventListener('click', this.handleIconClick);
   }
 
   toggleVisibility() {
     cartElement.classList.toggle('hidden');
   }
 
-  handleClick = () => {
+  handleIconClick = () => {
     this.toggleVisibility();
   };
-}
 
-class CartListController {
-  constructor(cart) {
-    this.cart = cart;
-  }
-
-  render() {
-    this.element = new CartListView(this.cart).render();
+  renderCartList() {
+    // this.destroyCartCards();
+    this.cartListElement = new CartListView(this.cart).render();
     if (this.cart.getCount() > 0) {
-      const elements = this.element.getElementsByClassName('cartProduct')
+      const elements = this.cartListElement.getElementsByClassName('cartProduct')
       for (let i = 0; i < elements.length; i++) {
-        elements[i].addEventListener('click', this.handleClick);
+        elements[i].addEventListener('click', this.handleCartCardClick);
       }
     }
   }
 
   remove(title) {
     this.cart.removeProductByTitle(title);
-    cartIconController.render();
-    cartListController.render();
+    this.renderIcon();
+    this.renderCartList();
   }
 
-  destroy() {
+  destroyCartCards() {
     const elements = cartElement.getElementsByClassName('cartProduct')
     for (let i = 0; i < elements.length; i++) {
-      elements[i].removeEventListener('click', this.handleClick);
+      elements[i].removeEventListener('click', this.handleCartCardClick);
     }
   }
 
-  handleClick = (event) => {
+  handleCartCardClick = (event) => {
     this.remove(event.target.textContent);
   };
 }
@@ -311,8 +306,6 @@ const cart = new Cart();
 const menuController = new MenuController(menu, cart);
 menuController.render();
 
-const cartIconController = new CartIconController(cart);
-cartIconController.render();
-
-const cartListController = new CartListController(cart);
-cartListController.render();
+const cartController = new CartController(cart);
+cartController.renderIcon();
+cartController.renderCartList();
