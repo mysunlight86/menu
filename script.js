@@ -166,24 +166,22 @@ class CartListView {
 // Controllers
 
 class MenuController {
-  constructor(menu, cart) {
+  constructor(menu, cart, categoriesTabsView) {
     this.currentCategory = '';
     this.menu = menu;
     this.cart = cart;
+    this.categoriesTabsView = categoriesTabsView;
   }
 
   render() {
-    const categoryList = this.menu.getCategories();
-    this.el = new CategoriesTabsView(categoryList).render();
-
-    const elements = this.el.getElementsByClassName('category');
+    const elements = this.categoriesTabsView.getElementsByClassName('category');
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener('click', this.handleTabClick);
     }
   }
 
   destroy() {
-    const elements = this.el.getElementsByClassName('category')
+    const elements = this.categoriesTabsView.getElementsByClassName('category')
     for (let i = 0; i < elements.length; i++) {
       elements[i].removeEventListener('click', this.handleTabClick);
     }
@@ -303,7 +301,9 @@ menu.add({ id: 9, title: 'Мороженое', category: 'Десерты', price
 
 const cart = new Cart();
 
-const menuController = new MenuController(menu, cart);
+const categoryList = menu.getCategories();
+const categoriesTabsView = new CategoriesTabsView(categoryList).render();
+const menuController = new MenuController(menu, cart, categoriesTabsView);
 menuController.render();
 
 const cartController = new CartController(cart);
