@@ -93,6 +93,10 @@ class ProductCardListView {
     }
     return this.element;
   }
+
+  onClick(handler) {
+    this.element.addEventListener('click', handler);
+  }
 }
 
 class CategoryTabView {
@@ -166,35 +170,40 @@ class CartListView {
 // Controllers
 
 class MenuController {
-  constructor(menu, categoriesTabsView) {
-    this.currentCategory = '';
+  constructor(menu, categoriesTabsElement, productCardListView, cartController) {
+    // this.currentCategory = '';
     this.menu = menu;
     this.cart = cart;
-    this.categoriesTabsView = categoriesTabsView;
+    this.categoriesTabsElement = categoriesTabsElement;
+    this.productCardListView = productCardListView;
+    this.cartController = cartController;
   }
 
   render() {
-    const elements = this.categoriesTabsView.getElementsByClassName('category');
+    const elements = this.categoriesTabsElement.getElementsByClassName('category');
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener('click', this.handleTabClick);
     }
   }
 
   destroy() {
-    const elements = this.categoriesTabsView.getElementsByClassName('category')
+    const elements = this.categoriesTabsElement.getElementsByClassName('category')
     for (let i = 0; i < elements.length; i++) {
       elements[i].removeEventListener('click', this.handleTabClick);
     }
   }
 
   renderProducts() {
-    const menuProducts = this.menu.getProductsByCategory(this.currentCategory);
-    this.els = new ProductCardListView(menuProducts).render();
+    const menuProducts = this.menu.getProductsByCategory(currentCategory);
+    this.productCardListView = new ProductCardListView(menuProducts);
+    this.productCardListElement = this.productCardListView.render();
 
-    const elements = menuProductsElement.getElementsByClassName('product');
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].addEventListener('click', this.handleProductClick);
-    }
+    // const elements = menuProductsElement.getElementsByClassName('product');
+    // for (let i = 0; i < elements.length; i++) {
+    //   elements[i].addEventListener('click', this.handleProductClick);
+    // }
+
+    this.productCardListView.onClick(this.cartController.add);
   }
 
   destroyProducts() {
@@ -203,20 +212,22 @@ class MenuController {
       elements[i].removeEventListener('click', this.handleProductClick);
     }
     if (elements.length > 0) {
-      this.els.replaceChildren();
+      this.productCardListElement.replaceChildren();
     }
   }
 
   handleTabClick = (event) => {
     this.destroyProducts();
-    this.currentCategory = event.target.textContent.trim();
+    currentCategory = event.target.textContent.trim();
     this.renderProducts();
   }
 }
 
 class CartController {
-  constructor(cart) {
+  constructor(menu, cart, productCardListView) {
+    this.menu = menu;
     this.cart = cart;
+    this.productCardListView = productCardListView;
   }
 
   renderIcon() {
@@ -247,6 +258,10 @@ class CartController {
     }
   }
 
+  add = () => {
+    this.productCardListView.onClick(this.handleProductClick);
+  }
+
   remove(title) {
     this.cart.removeProductByTitle(title);
     this.renderIcon();
@@ -269,6 +284,7 @@ class CartController {
     const cardElement = target.closest('[data-id]');
     const rawProductId = cardElement.dataset.id;
     const productId = parseInt(rawProductId, 10);
+    console.log(productId);
 
     const product = this.menu.getProductById(productId); 
     if (product) {
@@ -302,10 +318,16 @@ menu.add({ id: 9, title: 'Мороженое', category: 'Десерты', price
 const cart = new Cart();
 
 const categoryList = menu.getCategories();
-const categoriesTabsView = new CategoriesTabsView(categoryList).render();
-const menuController = new MenuController(menu, categoriesTabsView);
-menuController.render();
+const categoriesTabsElement = new CategoriesTabsView(categoryList).render();
 
-const cartController = new CartController(cart);
+let currentCategory = '';
+const menuProducts = menu.getProductsByCategory(currentCategory);
+const productCardListView = new ProductCardListView(menuProducts);
+productCardListView.render();
+
+const cartController = new CartController(menu, cart, productCardListView);
 cartController.renderIcon();
 cartController.renderCartList();
+
+const menuController = new MenuController(menu, categoriesTabsElement, productCardListView, cartController);
+menuController.render();
