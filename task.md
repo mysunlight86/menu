@@ -173,3 +173,78 @@ render() {
 - [x] Сделать новый CartController
 - [x] Перенести обработку клика по карточке в CartController
 - [ ] Добавить onClick тем View, которые поддерживаю обработку клика (меню, категория, иконка корзины, продукт в корзине)
+
+View должна работать с сущностями модели (Model Entity). В нашем случае это Cart, Menu, Product. Получить список продуктов по категории View должна самостоятельно. Пример:
+
+```JavaScript
+constructor(menu, category = menu.getCategories()[0]) {
+  this.menu = menu;
+  this.category = category;
+}
+```
+
+Пример методов подписки и отписки на событие в View:
+
+```JavaScript
+  on(eventType, handler) {
+    this.element.addEventListener(eventType, handler);
+  }
+
+  off(eventType, handler){
+    this.element.removeEventListener(eventType, handler);
+  }
+```
+
+Пример параметров MenuController
+
+```JavaScript
+constructor(menu, categoriesTabsView, productCardListView, cartController)
+```
+
+Чтобы избежать копирования одниаковых методов в нескольких классах можно вынести их в суперкласс. В примере - класс View.
+
+
+```JavaScript
+class View {
+  // Общий метод 1
+  on(eventType, handler) {
+    this.element.addEventListener(eventType, handler);
+  }
+
+  // Общий метод 2
+  off(eventType, handler){
+    this.element.removeEventListener(eventType, handler);
+  }
+}
+
+
+class ProductCardListView extends View {
+  constructor(menu, category = menu.getCategories()[0]) {
+    super();
+    this.menu = menu;
+    this.category = category;
+  }
+
+  render() {  }
+}
+
+class CategoryTabView extends View {
+  constructor(category) {
+    super();
+    this.category = category;
+  }
+
+  render() { }
+}
+
+```
+
+- [ ] Model / Cart сделать метод `removeProduct(id)`
+- [ ] Привести конструкторы всех View к виду `constructor(modelEntity)`
+- [ ] MenuController не должен получать в конструктор элементов, только view, model
+- [ ] Вынести в суперкласс View методы on и off
+- [ ] Сделать наследование от класса View во всех классах *View
+
+
+
+
