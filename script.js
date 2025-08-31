@@ -127,6 +127,10 @@ class CategoriesTabsView {
     }
     return this.element;
   }
+
+  onClick(handler) {
+    this.element.addEventListener('click', handler);
+  }
 }
 
 class CartIconView {
@@ -140,6 +144,10 @@ class CartIconView {
     this.element = document.querySelector('.cartIcon');
     this.element.innerHTML = `<span class="orderCount" style="display: ${display}">${count}</span>`
     return this.element;
+  }
+
+  onClick(handler) {
+    this.element.addEventListener('click', handler);
   }
 }
 
@@ -165,6 +173,10 @@ class CartListView {
 
     return this.element;
   }
+
+  onClick(handler) {
+    this.element.addEventListener('click', handler);
+  }
 }
 
 // Controllers
@@ -179,12 +191,9 @@ class MenuController {
 
   render() {
     const categoryList = this.menu.getCategories();
-    this.categoriesTabsElement = new CategoriesTabsView(categoryList).render();
-
-    const elements = this.categoriesTabsElement.getElementsByClassName('category');
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].addEventListener('click', this.handleTabClick);
-    }
+    this.categoriesTabsView = new CategoriesTabsView(categoryList);
+    this.categoriesTabsElement = this.categoriesTabsView.render();
+    this.categoriesTabsView.onClick(this.handleTabClick);
   }
 
   destroy() {
@@ -241,8 +250,9 @@ class CartController {
   }
 
   renderIcon() {
-    this.iconElement = new CartIconView(this.cart).render();
-    this.iconElement.addEventListener('click', this.handleIconClick);
+    this.cartIconView = new CartIconView(this.cart);
+    this.iconElement = this.cartIconView.render();
+    this.cartIconView.onClick(this.handleIconClick);
   }
 
   destroyIconCart() {
@@ -259,12 +269,10 @@ class CartController {
 
   renderCartList() {
     this.destroyCartCards();
-    this.cartListElement = new CartListView(this.cart).render();
+    this.cartListView = new CartListView(this.cart);
+    this.cartListElement = this.cartListView.render();
     if (this.cart.getCount() > 0) {
-      const elements = this.cartListElement.getElementsByClassName('cartProduct')
-      for (let i = 0; i < elements.length; i++) {
-        elements[i].addEventListener('click', this.handleCartCardClick);
-      }
+      this.cartListView.onClick(this.handleCartCardClick);
     }
   }
 
