@@ -239,7 +239,7 @@ class CategoryTabView extends View {
 
 ```
 
-- [ ] Model / Cart сделать метод `removeProduct(id)`
+- [x] Model / Cart сделать метод `removeProduct(id)`
 - [ ] Привести конструкторы всех View к виду `constructor(modelEntity)`
 - [ ] MenuController не должен получать в конструктор элементов, только view, model
 - [ ] Вынести в суперкласс View методы on и off

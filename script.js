@@ -40,9 +40,9 @@ class Cart {
     this.products.push(product);
   }
 
-  removeProductByTitle(title) {
+  removeProduct(id) {
     for (let i = 0; i < this.products.length; i++) {
-      if (this.products[i].title === title) {
+      if (this.products[i].id === id) {
         this.products.splice(i, 1);
       }
     }
@@ -164,6 +164,7 @@ class CartListView {
       const listItem = document.createElement('li');
       listItem.textContent = product.title;
       listItem.classList.add('cartProduct');
+      listItem.dataset.id = product.id;
       this.element.append(listItem);
     }
 
@@ -276,8 +277,8 @@ class CartController {
     }
   }
 
-  remove(title) {
-    this.cart.removeProductByTitle(title);
+  remove(id) {
+    this.cart.removeProduct(id);
     this.renderIcon();
     this.renderCartList();
   }
@@ -290,7 +291,16 @@ class CartController {
   }
 
   handleCartCardClick = (event) => {
-    this.remove(event.target.textContent);
+    const target = event.target;
+    const cardElement = target.closest('[data-id]');
+    if (cardElement) {
+      const rawProductId = cardElement.dataset.id;
+      const productId = parseInt(rawProductId, 10);
+      this.remove(productId);
+
+      this.renderIcon();
+      this.renderCartList();
+    }
   };
 }
 
