@@ -203,7 +203,7 @@ class MenuController {
     //   elements[i].addEventListener('click', this.handleProductClick);
     // }
 
-    this.productCardListView.onClick(this.cartController.add);
+    this.productCardListView.onClick(this.handleProductClick);
   }
 
   destroyProducts() {
@@ -220,6 +220,22 @@ class MenuController {
     this.destroyProducts();
     currentCategory = event.target.textContent.trim();
     this.renderProducts();
+  }
+
+  handleProductClick = (event) => {
+    const target = event.target;
+    const cardElement = target.closest('[data-id]');
+    const rawProductId = cardElement.dataset.id;
+    const productId = parseInt(rawProductId, 10);
+    console.log(productId);
+
+    const product = this.menu.getProductById(productId); 
+    if (product) {
+      this.cart.add(product);
+    }
+
+    this.cartController.renderIcon();
+    this.cartController.renderCartList();
   }
 }
 
@@ -278,22 +294,6 @@ class CartController {
   handleCartCardClick = (event) => {
     this.remove(event.target.textContent);
   };
-
-  handleProductClick = (event) => {
-    const target = event.target;
-    const cardElement = target.closest('[data-id]');
-    const rawProductId = cardElement.dataset.id;
-    const productId = parseInt(rawProductId, 10);
-    console.log(productId);
-
-    const product = this.menu.getProductById(productId); 
-    if (product) {
-      this.cart.add(product);
-    }
-
-    this.renderIcon();
-    this.renderCartList();
-  }
 }
 
 // Initialization
