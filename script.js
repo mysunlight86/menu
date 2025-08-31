@@ -220,6 +220,7 @@ class MenuController {
   handleProductClick = (event) => {
     const target = event.target;
     const cardElement = target.closest('[data-id]');
+    if (!cardElement) return;
     const rawProductId = cardElement.dataset.id;
     const productId = parseInt(rawProductId, 10);
 
