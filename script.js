@@ -59,8 +59,19 @@ class Cart {
 
 // View
 
-class ProductCardView {
+class View {
+  on(eventType, handler) {
+    this.element.addEventListener(eventType, handler);
+  }
+
+  off(eventType, handler){
+    this.element.removeEventListener(eventType, handler);
+  }
+}
+
+class ProductCardView extends View {
   constructor(product) {
+    super();
     this.product = product;
   }
 
@@ -79,8 +90,9 @@ class ProductCardView {
   }
 }
 
-class ProductCardListView {
+class ProductCardListView extends View {
   constructor(menu, category = menu.getCategories()[0]) {
+    super();
     this.menu = menu;
     this.category = category;
   }
@@ -96,12 +108,13 @@ class ProductCardListView {
   }
 
   onClick(handler) {
-    this.element.addEventListener('click', handler);
+    this.on('click', handler);
   }
 }
 
-class CategoryTabView {
+class CategoryTabView extends View {
   constructor(menu, category = menu.getCategories()[0]) {
+    super();
     this.menu = menu;
     this.category = category;
   }
@@ -115,8 +128,9 @@ class CategoryTabView {
   }
 }
 
-class CategoriesTabsView {
+class CategoriesTabsView extends View {
   constructor(menu, categoryList = menu.getCategories()) {
+    super();
     this.menu = menu;
     this.categoryList = categoryList;
   }
@@ -132,12 +146,13 @@ class CategoriesTabsView {
   }
 
   onClick(handler) {
-    this.element.addEventListener('click', handler);
+    this.on('click', handler);
   }
 }
 
-class CartIconView {
+class CartIconView extends View {
   constructor(cart) {
+    super();
     this.cart = cart;
   }
 
@@ -150,12 +165,13 @@ class CartIconView {
   }
 
   onClick(handler) {
-    this.element.addEventListener('click', handler);
+    this.on('click', handler);
   }
 }
 
-class CartListView {
+class CartListView extends View {
   constructor(cart) {
+    super();
     this.cart = cart;
   }
 
@@ -179,7 +195,7 @@ class CartListView {
   }
 
   onClick(handler) {
-    this.element.addEventListener('click', handler);
+    this.on('click', handler);
   }
 }
 
@@ -201,10 +217,7 @@ class MenuController {
   }
 
   destroy() {
-    const elements = this.categoriesTabsView.element.getElementsByClassName('category')
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].removeEventListener('click', this.handleTabClick);
-    }
+     this.categoriesTabsView.element.removeEventListener('click', this.handleTabClick);
   }
 
   renderProducts() {
@@ -214,10 +227,7 @@ class MenuController {
   }
 
   destroyProducts() {
-    const elements = menuProductsElement.getElementsByClassName('product');
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].removeEventListener('click', this.handleProductClick);
-    }
+    this.productCardListView.element.removeEventListener('click', this.handleProductClick);
     if (elements.length > 0) {
       this.productCardListView.element.replaceChildren();
     }
@@ -259,7 +269,7 @@ class CartController {
     this.cartIconView.onClick(this.handleIconClick);
   }
 
-  destroyIconCart() {
+  destroyIcon() {
     this.cartIconView.element.removeEventListener('click', this.handleIconClick);
   }
 
@@ -272,7 +282,7 @@ class CartController {
   };
 
   renderCartList() {
-    this.destroyCartCards();
+    this.destroyCartList();
     this.cartListView.render();
     if (this.cart.getCount() > 0) {
       this.cartListView.onClick(this.handleCartCardClick);
@@ -285,11 +295,12 @@ class CartController {
     this.renderCartList();
   }
 
-  destroyCartCards() {
-    const elements = cartElement.getElementsByClassName('cartProduct')
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].removeEventListener('click', this.handleCartCardClick);
-    }
+  destroyCartList() {
+    // console.log(this);
+    console.log(this.cartListView); // = {cart: Cart} ?
+    console.log(this.cartListView.element); // = undefined ?
+
+    this.cartListView.element.removeEventListener('click', this.handleCartCardClick); // ?
   }
 
   handleCartCardClick = (event) => {
