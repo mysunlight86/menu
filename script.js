@@ -44,6 +44,7 @@ class Cart {
     for (let i = 0; i < this.products.length; i++) {
       if (this.products[i].id === id) {
         this.products.splice(i, 1);
+        return;
       }
     }
   }
@@ -65,7 +66,7 @@ class View {
   }
 
   off(eventType, handler){
-    this.element.removeEventListener(eventType, handler);
+    if (this.element) this.element.removeEventListener(eventType, handler);
   }
 }
 
@@ -221,22 +222,21 @@ class MenuController {
   }
 
   renderProducts() {
-    this.productCardListView = new ProductCardListView(this.menu, this.currentCategory);
+    this.productCardListView.category = this.currentCategory;
     this.productCardListView.render();
     this.productCardListView.onClick(this.handleProductClick);
   }
 
   destroyProducts() {
-    this.productCardListView.element.removeEventListener('click', this.handleProductClick);
-    if (elements.length > 0) {
-      this.productCardListView.element.replaceChildren();
-    }
+    this.productCardListView.off('click', this.handleProductClick);
   }
 
   handleTabClick = (event) => {
-    this.destroyProducts();
-    this.currentCategory = event.target.textContent.trim();
-    this.renderProducts();
+    if (event.target.classList.contains('category')) {
+      this.destroyProducts();
+      this.currentCategory = event.target.textContent.trim();
+      this.renderProducts();
+    }
   }
 
   handleProductClick = (event) => {
@@ -246,7 +246,7 @@ class MenuController {
     const rawProductId = cardElement.dataset.id;
     const productId = parseInt(rawProductId, 10);
 
-    const product = this.menu.getProductById(productId); 
+    const product = this.menu.getProductById(productId);
     if (product) {
       this.cart.add(product);
     }
@@ -299,8 +299,7 @@ class CartController {
     // console.log(this);
     console.log(this.cartListView); // = {cart: Cart} ?
     console.log(this.cartListView.element); // = undefined ?
-
-    this.cartListView.element.removeEventListener('click', this.handleCartCardClick); // ?
+    this.cartListView.off('click', this.handleCartCardClick);
   }
 
   handleCartCardClick = (event) => {
