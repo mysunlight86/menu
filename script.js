@@ -70,7 +70,22 @@ class View {
   }
 }
 
-class ProductCardView extends View {
+class CompositeView extends View {
+  constructor() {
+    super();
+    this.children = [];
+  }
+
+  render() {
+    for (const child of this.children) {
+      const el = child.render();
+      this.element.append(el);
+    }
+    return this.element;
+  }
+}
+
+class ProductCardView extends CompositeView {
   constructor(product) {
     super();
     this.product = product;
@@ -91,7 +106,7 @@ class ProductCardView extends View {
   }
 }
 
-class ProductCardListView extends View {
+class ProductCardListView extends CompositeView {
   constructor(menu, category = menu.getCategories()[0]) {
     super();
     this.menu = menu;
@@ -100,16 +115,18 @@ class ProductCardListView extends View {
 
   render() {
     this.element = document.querySelector('.menuProducts');
-    this.element.replaceChildren();
+
+    this.children = [];
     for (const product of this.menu.getProductsByCategory(this.category)) {
-      const el = new ProductCardView(product).render();
-      this.element.append(el);
+      this.children.push(new ProductCardView(product));
     }
-    return this.element;
+
+    this.element.replaceChildren();
+    return super.render();
   }
 }
 
-class CategoryTabView extends View {
+class CategoryTabView extends CompositeView {
   constructor(category, isActive) {
     super();
     this.category = category;
@@ -126,16 +143,12 @@ class CategoryTabView extends View {
   }
 }
 
-class CategoriesTabsView extends View {
+class CategoriesTabsView extends CompositeView {
   constructor(menu) {
     super();
 
     this.menu = menu;
     this.category = this.menu.getCategories()[0];
-
-    // -------
-
-    this.children = [];
   }
 
   render() {
@@ -146,19 +159,12 @@ class CategoriesTabsView extends View {
       this.children.push(new CategoryTabView(category, this.category === category))
     }
 
-    // -----------
-
     this.element.replaceChildren();
-    for (const child of this.children) {
-      const el = child.render();
-      this.element.append(el);
-    }
-
-    return this.element;
+    return super.render();
   }
 }
 
-class CartIconView extends View {
+class CartIconView extends CompositeView {
   constructor(cart) {
     super();
     this.cart = cart;
@@ -173,7 +179,7 @@ class CartIconView extends View {
   }
 }
 
-class CartListItemView extends View {
+class CartListItemView extends CompositeView {
   constructor(product) {
     super();
     this.product = product;
@@ -188,7 +194,7 @@ class CartListItemView extends View {
   }
 }
 
-class CartListView extends View {
+class CartListView extends CompositeView {
   constructor(cart) {
     super();
     this.cart = cart;
@@ -197,17 +203,19 @@ class CartListView extends View {
   render() {
     const cartProducts = this.cart.getAllProducts();
     this.element = document.querySelector('.cart');
-    this.element.replaceChildren();
-    for (const product of cartProducts) {
-      const listItem = new CartListItemView(product).render();
-      this.element.append(listItem);
-    }
 
     if (this.cart.getCount() === 0) {
       this.element.textContent = 'Вы пока ничего не выбрали';
+      return;
     }
 
-    return this.element;
+    this.children = [];
+    for (const product of cartProducts) {
+      this.children.push(new CartListItemView(product));
+    }
+
+    this.element.replaceChildren();
+    return super.render();
   }
 }
 
