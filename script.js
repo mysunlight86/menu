@@ -173,6 +173,21 @@ class CartIconView extends View {
   }
 }
 
+class CartListItemView extends View {
+  constructor(product) {
+    super();
+    this.product = product;
+  }
+
+  render() {
+    this.element = document.createElement('li');
+    this.element.textContent = this.product.title;
+    this.element.classList.add('cartProduct');
+    this.element.dataset.id = this.product.id;
+    return this.element;
+  }
+}
+
 class CartListView extends View {
   constructor(cart) {
     super();
@@ -184,10 +199,7 @@ class CartListView extends View {
     this.element = document.querySelector('.cart');
     this.element.replaceChildren();
     for (const product of cartProducts) {
-      const listItem = document.createElement('li');
-      listItem.textContent = product.title;
-      listItem.classList.add('cartProduct');
-      listItem.dataset.id = product.id;
+      const listItem = new CartListItemView(product).render();
       this.element.append(listItem);
     }
 
