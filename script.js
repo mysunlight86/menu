@@ -114,40 +114,51 @@ class ProductCardListView extends View {
 }
 
 class CategoryTabView extends View {
-  constructor(menu, category = menu.getCategories()[0]) {
+  constructor(category, isActive) {
     super();
-    this.menu = menu;
     this.category = category;
+    this.isActive = isActive
   }
 
   render() {
     this.element = document.createElement('li');
     this.element.textContent = this.category;
     this.element.classList.add('category');
+    if (this.isActive) this.element.classList.add('active');
     this.element.dataset.id = this.category;
     return this.element;
   }
 }
 
 class CategoriesTabsView extends View {
-  constructor(menu, categoryList = menu.getCategories()) {
+  constructor(menu) {
     super();
+
     this.menu = menu;
-    this.categoryList = categoryList;
+    this.category = this.menu.getCategories()[0];
+
+    // -------
+
+    this.children = [];
   }
 
   render() {
     this.element = document.querySelector('.categories');
+
+    this.children = [];
+    for (const category of menu.getCategories()) {
+      this.children.push(new CategoryTabView(category, this.category === category))
+    }
+
+    // -----------
+
     this.element.replaceChildren();
-    for (const category of this.categoryList) {
-      const el = new CategoryTabView(this.menu, category).render();
+    for (const child of this.children) {
+      const el = child.render();
       this.element.append(el);
     }
-    return this.element;
-  }
 
-  onClick(handler) {
-    this.on('click', handler);
+    return this.element;
   }
 }
 
@@ -204,8 +215,8 @@ class CartListView extends View {
 
 class MenuController {
   constructor(menu, cart, productCardListView, categoriesTabsView, cartController) {
-    this.currentCategory = 'Напитки';
     this.menu = menu;
+    this.currentCategory = this.menu.getCategories()[0];
     this.cart = cart;
     this.productCardListView = productCardListView;
     this.categoriesTabsView = categoriesTabsView;
@@ -213,8 +224,9 @@ class MenuController {
   }
 
   render() {
+    this.categoriesTabsView.category = this.currentCategory;
     this.categoriesTabsView.render();
-    this.categoriesTabsView.onClick(this.handleTabClick);
+    this.categoriesTabsView.on('click', this.handleTabClick);
   }
 
   destroy() {
@@ -233,9 +245,13 @@ class MenuController {
 
   handleTabClick = (event) => {
     if (event.target.classList.contains('category')) {
-      this.destroyProducts();
       this.currentCategory = event.target.textContent.trim();
+
+      this.destroyProducts();
       this.renderProducts();
+
+      this.destroy();
+      this.render();
     }
   }
 

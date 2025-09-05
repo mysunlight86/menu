@@ -77,3 +77,7 @@ ul {
 .cart.hidden {
   display: none;
 }
+
+.category.active {
+  text-decoration: underline;
+}
