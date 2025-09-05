@@ -40,6 +40,10 @@ ul {
   background-color: coral;
 }
 
+.category.active {
+  text-decoration: underline;
+}
+
 .menuProducts {
   background-color: burlywood;
 }
@@ -76,8 +80,4 @@ ul {
 
 .cart.hidden {
   display: none;
-}
-
-.category.active {
-  text-decoration: underline;
 }

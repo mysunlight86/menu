@@ -312,9 +312,6 @@ class CartController {
   }
 
   destroyCartList() {
-    // console.log(this);
-    console.log(this.cartListView); // = {cart: Cart} ?
-    console.log(this.cartListView.element); // = undefined ?
     this.cartListView.off('click', this.handleCartCardClick);
   }
 
