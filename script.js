@@ -107,10 +107,6 @@ class ProductCardListView extends View {
     }
     return this.element;
   }
-
-  onClick(handler) {
-    this.on('click', handler);
-  }
 }
 
 class CategoryTabView extends View {
@@ -175,10 +171,6 @@ class CartIconView extends View {
     this.element.innerHTML = `<span class="orderCount" style="display: ${display}">${count}</span>`
     return this.element;
   }
-
-  onClick(handler) {
-    this.on('click', handler);
-  }
 }
 
 class CartListView extends View {
@@ -204,10 +196,6 @@ class CartListView extends View {
     }
 
     return this.element;
-  }
-
-  onClick(handler) {
-    this.on('click', handler);
   }
 }
 
@@ -236,7 +224,7 @@ class MenuController {
   renderProducts() {
     this.productCardListView.category = this.currentCategory;
     this.productCardListView.render();
-    this.productCardListView.onClick(this.handleProductClick);
+    this.productCardListView.on('click', this.handleProductClick);
   }
 
   destroyProducts() {
@@ -282,7 +270,7 @@ class CartController {
 
   renderIcon() {
     this.cartIconView.render();
-    this.cartIconView.onClick(this.handleIconClick);
+    this.cartIconView.on('click', this.handleIconClick);
   }
 
   destroyIcon() {
@@ -301,7 +289,7 @@ class CartController {
     this.destroyCartList();
     this.cartListView.render();
     if (this.cart.getCount() > 0) {
-      this.cartListView.onClick(this.handleCartCardClick);
+      this.cartListView.on('click', this.handleCartCardClick);
     }
   }
 
