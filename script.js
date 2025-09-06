@@ -2,13 +2,13 @@ class PubSubBus {
   static subscribe(eventType, handler) {
     document.addEventListener(eventType, handler);
   }
-  
+
   static unsubscribe(eventType, handler) {
     document.removeEventListener(eventType, handler);
   }
 
   static publish(eventType, detail) {
-    document.dispatchEvent(new CustomEvent(eventType, {detail: {key: value}}))
+    document.dispatchEvent(new CustomEvent(eventType, {detail: {key: detail}}))
   }
 }
 
@@ -234,13 +234,12 @@ class CartListView extends CompositeView {
 // Controllers
 
 class MenuController {
-  constructor(menu, cart, productCardListView, categoriesTabsView, cartController) {
+  constructor(menu, cart, productCardListView, categoriesTabsView) {
     this.menu = menu;
     this.currentCategory = this.menu.getCategories()[0];
     this.cart = cart;
     this.productCardListView = productCardListView;
     this.categoriesTabsView = categoriesTabsView;
-    this.cartController = cartController;
   }
 
   render() {
@@ -285,10 +284,8 @@ class MenuController {
     const product = this.menu.getProductById(productId);
     if (product) {
       this.cart.add(product);
+      PubSubBus.publish('updated.cart');
     }
-
-    this.cartController.renderIcon();
-    this.cartController.renderCartList();
   }
 }
 
@@ -300,6 +297,14 @@ class CartController {
     this.cartListView = cartListView;
   }
 
+  init() {
+    PubSubBus.subscribe('updated.cart', this.handleCartUpdated);
+  }
+
+  dispose() {
+    PubSubBus.unsubscribe('updated.cart', this.handleCartUpdated);
+  }
+
   renderIcon() {
     this.cartIconView.render();
     this.cartIconView.on('click', this.handleIconClick);
@@ -309,14 +314,6 @@ class CartController {
     this.cartIconView.element.removeEventListener('click', this.handleIconClick);
   }
 
-  toggleVisibility() {
-    cartElement.classList.toggle('hidden');
-  }
-
-  handleIconClick = () => {
-    this.toggleVisibility();
-  };
-
   renderCartList() {
     this.destroyCartList();
     this.cartListView.render();
@@ -325,15 +322,18 @@ class CartController {
     }
   }
 
-  remove(id) {
-    this.cart.removeProduct(id);
+  destroyCartList() {
+    this.cartListView.off('click', this.handleCartCardClick);
+  }
+
+  handleCartUpdated = () => {
     this.renderIcon();
     this.renderCartList();
   }
 
-  destroyCartList() {
-    this.cartListView.off('click', this.handleCartCardClick);
-  }
+  handleIconClick = () => {
+    this.toggleVisibility();
+  };
 
   handleCartCardClick = (event) => {
     const target = event.target;
@@ -346,7 +346,17 @@ class CartController {
       this.renderIcon();
       this.renderCartList();
     }
-  };
+  }
+
+  toggleVisibility() {
+    cartElement.classList.toggle('hidden');
+  }
+
+  remove(id) {
+    this.cart.removeProduct(id);
+    this.renderIcon();
+    this.renderCartList();
+  }
 }
 
 // Initialization
@@ -376,10 +386,11 @@ const cartListView = new CartListView(cart);
 const cartController = new CartController(menu, cart, cartIconView, cartListView);
 cartController.renderIcon();
 cartController.renderCartList();
+cartController.init();
 
 const productCardListView = new ProductCardListView(menu);
 const categoriesTabsView = new CategoriesTabsView(menu);
 
-const menuController = new MenuController(menu, cart, productCardListView, categoriesTabsView, cartController);
+const menuController = new MenuController(menu, cart, productCardListView, categoriesTabsView);
 menuController.render();
 menuController.renderProducts();
