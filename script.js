@@ -77,6 +77,7 @@ class CompositeView extends View {
   }
 
   render() {
+    this.element.replaceChildren();
     for (const child of this.children) {
       const el = child.render();
       this.element.append(el);
@@ -85,7 +86,7 @@ class CompositeView extends View {
   }
 }
 
-class ProductCardView extends CompositeView {
+class ProductCardView extends View {
   constructor(product) {
     super();
     this.product = product;
@@ -121,12 +122,11 @@ class ProductCardListView extends CompositeView {
       this.children.push(new ProductCardView(product));
     }
 
-    this.element.replaceChildren();
     return super.render();
   }
 }
 
-class CategoryTabView extends CompositeView {
+class CategoryTabView extends View {
   constructor(category, isActive) {
     super();
     this.category = category;
@@ -159,12 +159,11 @@ class CategoriesTabsView extends CompositeView {
       this.children.push(new CategoryTabView(category, this.category === category))
     }
 
-    this.element.replaceChildren();
     return super.render();
   }
 }
 
-class CartIconView extends CompositeView {
+class CartIconView extends View {
   constructor(cart) {
     super();
     this.cart = cart;
@@ -179,7 +178,7 @@ class CartIconView extends CompositeView {
   }
 }
 
-class CartListItemView extends CompositeView {
+class CartListItemView extends View {
   constructor(product) {
     super();
     this.product = product;
@@ -214,7 +213,6 @@ class CartListView extends CompositeView {
       this.children.push(new CartListItemView(product));
     }
 
-    this.element.replaceChildren();
     return super.render();
   }
 }
