@@ -245,6 +245,77 @@ class CategoryTabView extends View {
 - [x] Вынести в суперкласс View методы on и off
 - [x] Сделать наследование от класса View во всех классах *View
 
+# Шина событий для контроллеров
+
+Интерфейс шины:
+
+```JavaScript
+class PubSubBus {
+  static subscribe(eventType, handler) { }
+  static unsubscribe(eventType, handler) { }
+  static publish(eventType, detail) { }
+}
+```
+
+Для реализации шины можно использовать систему событий DOM
+
+```JavaScript
+document.addEventListener(eventType, handler); // подписка
+document.removeEventListener(eventType, handler); // отписка
+document.dispatchEvent(new CustomEvent(eventType, {detail: {key: value}})) // публикация события
+```
+
+Пример отправки события обновления корзины
+
+```JavaScript
+class MenuController {
+  handleProductClick = (event) => {
+    const product = /* find product */;
+    if (product) {
+      this.cart.add(product);
+      PubSubBus.publish('updated.cart');
+    }
+  }
+
+  // ... other methods
+}
+```
+
+Пример подписки на событие
+
+```JavaScript
+class CartController {
+  init() {
+    PubSubBus.subscribe('updated.cart', this.handleCartUpdated);
+  }
+
+  dispose() {
+    PubSubBus.unsubscribe('updated.cart', this.handleCartUpdated);
+  }
+
+  handleCartUpdated = () => {
+    this.renderIcon();
+    this.renderCartList();
+  }
+
+  // Other methods
+}
+```
+
+- [ ] Сделать класс шины событий (PubSubBus)
+- [ ] Использовать PubSubBus для уведомления контроллера корзины о необходимости перерисовать представления (Views).
+- [ ] Методы init должны быть вызваны при создании контроллера (CartController)
+- [ ] Убрать ссылку на CartController из MenuController
+
+
+
+
+
+
+
+
+
+
 
 
 
