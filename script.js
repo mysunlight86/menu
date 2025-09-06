@@ -1,3 +1,17 @@
+class PubSubBus {
+  static subscribe(eventType, handler) {
+    document.addEventListener(eventType, handler);
+  }
+  
+  static unsubscribe(eventType, handler) {
+    document.removeEventListener(eventType, handler);
+  }
+
+  static publish(eventType, detail) {
+    document.dispatchEvent(new CustomEvent(eventType, {detail: {key: value}}))
+  }
+}
+
 // Model Classes
 
 class Menu {
