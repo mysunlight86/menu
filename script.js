@@ -219,41 +219,14 @@ class CartListView extends CompositeView {
 
 // Controllers
 
-class PubSubBus {
-  handlers = {};
-
-  subscribe(eventType, handler) {
-    if (!this.handlers[eventType]) {
-      this.handlers[eventType] = [];
-    }
-    this.handlers[eventType].push(handler);
-  }
-
-  unsubscribe(eventType, handler) {
-    if (!this.handlers[eventType]) return;
-    const index = this.handlers[eventType].indexOf(handler);
-    if (index === -1) return;
-    this.handlers[eventType].splice(index, 1);
-  }
-
-  publish(eventType, args) {
-    if (!this.handlers[eventType]) return;
-    const handlers = Array.from(this.handlers[eventType]);
-    for (const handler of handlers) {
-      handler(args);
-    }
-  }
-}
-
-
 class MenuController {
-  constructor(menu, cart, productCardListView, categoriesTabsView, pubSubBus) {
+  constructor(menu, cart, productCardListView, categoriesTabsView, cartController) {
     this.menu = menu;
     this.currentCategory = this.menu.getCategories()[0];
     this.cart = cart;
     this.productCardListView = productCardListView;
     this.categoriesTabsView = categoriesTabsView;
-    this.pubSubBus = pubSubBus;
+    this.cartController = cartController;
   }
 
   render() {
@@ -298,34 +271,37 @@ class MenuController {
     const product = this.menu.getProductById(productId);
     if (product) {
       this.cart.add(product);
-      this.pubSubBus.publish('updated.cart');
     }
+
+    this.cartController.renderIcon();
+    this.cartController.renderCartList();
   }
 }
 
 class CartController {
-  constructor(menu, cart, cartIconView, cartListView, pubSubBus) {
+  constructor(menu, cart, cartIconView, cartListView) {
     this.menu = menu;
     this.cart = cart;
     this.cartIconView = cartIconView;
     this.cartListView = cartListView;
-    this.pubSubBus = pubSubBus;
   }
 
   renderIcon() {
     this.cartIconView.render();
     this.cartIconView.on('click', this.handleIconClick);
-    this.pubSubBus.subscribe('updated.cart', this.handleCartUpdated);
   }
 
   destroyIcon() {
     this.cartIconView.element.removeEventListener('click', this.handleIconClick);
-    this.pubSubBus.unsubscribe('updated.cart', this.handleCartUpdated);
   }
 
   toggleVisibility() {
     cartElement.classList.toggle('hidden');
   }
+
+  handleIconClick = () => {
+    this.toggleVisibility();
+  };
 
   renderCartList() {
     this.destroyCartList();
@@ -345,10 +321,6 @@ class CartController {
     this.cartListView.off('click', this.handleCartCardClick);
   }
 
-  handleIconClick = () => {
-    this.toggleVisibility();
-  };
-
   handleCartCardClick = (event) => {
     const target = event.target;
     const cardElement = target.closest('[data-id]');
@@ -361,12 +333,6 @@ class CartController {
       this.renderCartList();
     }
   };
-
-  handleCartUpdated = () => {
-    this.destroyIcon();
-    this.renderIcon();
-    this.renderCartList();
-  }
 }
 
 // Initialization
@@ -393,15 +359,13 @@ const cart = new Cart();
 const cartIconView = new CartIconView(cart);
 const cartListView = new CartListView(cart);
 
-const pubSubBus = new PubSubBus();
-
-const cartController = new CartController(menu, cart, cartIconView, cartListView, pubSubBus);
+const cartController = new CartController(menu, cart, cartIconView, cartListView);
 cartController.renderIcon();
 cartController.renderCartList();
 
 const productCardListView = new ProductCardListView(menu);
 const categoriesTabsView = new CategoriesTabsView(menu);
 
-const menuController = new MenuController(menu, cart, productCardListView, categoriesTabsView, pubSubBus);
+const menuController = new MenuController(menu, cart, productCardListView, categoriesTabsView, cartController);
 menuController.render();
 menuController.renderProducts();
