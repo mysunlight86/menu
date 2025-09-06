@@ -220,28 +220,16 @@ class CartListView extends CompositeView {
 // Controllers
 
 class PubSubBus {
-  handlers = {};
-
   subscribe(eventType, handler) {
-    if (!this.handlers[eventType]) {
-      this.handlers[eventType] = [];
-    }
-    this.handlers[eventType].push(handler);
+    document.addEventListener(eventType, handler);
   }
 
   unsubscribe(eventType, handler) {
-    if (!this.handlers[eventType]) return;
-    const index = this.handlers[eventType].indexOf(handler);
-    if (index === -1) return;
-    this.handlers[eventType].splice(index, 1);
+    document.removeEventListener(eventType, handler);
   }
 
-  publish(eventType, args) {
-    if (!this.handlers[eventType]) return;
-    const handlers = Array.from(this.handlers[eventType]);
-    for (const handler of handlers) {
-      handler(args);
-    }
+  publish(eventType, detail) {
+    document.dispatchEvent(new CustomEvent(eventType, {detail}))
   }
 }
 
