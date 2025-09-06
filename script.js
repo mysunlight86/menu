@@ -312,21 +312,15 @@ class CartController {
     this.pubSubBus = pubSubBus;
   }
 
-  init() {
-    this.pubSubBus.subscribe('updated.cart', this.handleCartUpdated);
-  }
-
-  dispose() {
-    this.pubSubBus.unsubscribe('updated.cart', this.handleCartUpdated);
-  }
-
   renderIcon() {
     this.cartIconView.render();
     this.cartIconView.on('click', this.handleIconClick);
+    this.pubSubBus.subscribe('updated.cart', this.handleCartUpdated);
   }
 
   destroyIcon() {
     this.cartIconView.element.removeEventListener('click', this.handleIconClick);
+    this.pubSubBus.unsubscribe('updated.cart', this.handleCartUpdated);
   }
 
   toggleVisibility() {
@@ -369,6 +363,7 @@ class CartController {
   };
 
   handleCartUpdated = () => {
+    this.destroyIcon();
     this.renderIcon();
     this.renderCartList();
   }
@@ -401,7 +396,6 @@ const cartListView = new CartListView(cart);
 const pubSubBus = new PubSubBus();
 
 const cartController = new CartController(menu, cart, cartIconView, cartListView, pubSubBus);
-cartController.init();
 cartController.renderIcon();
 cartController.renderCartList();
 
