@@ -1,14 +1,14 @@
 class PubSubBus {
-  static subscribe(eventType, handler) {
+  static on(eventType, handler) {
     document.addEventListener(eventType, handler);
   }
 
-  static unsubscribe(eventType, handler) {
+  static off(eventType, handler) {
     document.removeEventListener(eventType, handler);
   }
 
   static publish(eventType, detail) {
-    document.dispatchEvent(new CustomEvent(eventType, {detail: {key: detail}}))
+    document.dispatchEvent(new CustomEvent(eventType, { detail }))
   }
 }
 
@@ -72,6 +72,11 @@ class Cart {
   }
 }
 
+class Store {
+  menu = new Menu();
+  cart = new Cart();
+}
+
 // View
 
 class View {
@@ -79,7 +84,7 @@ class View {
     this.element.addEventListener(eventType, handler);
   }
 
-  off(eventType, handler){
+  off(eventType, handler) {
     if (this.element) this.element.removeEventListener(eventType, handler);
   }
 }
@@ -91,11 +96,12 @@ class CompositeView extends View {
   }
 
   render() {
-    this.element.replaceChildren();
+    const childrenElements = [];
     for (const child of this.children) {
       const el = child.render();
-      this.element.append(el);
+      childrenElements.push(el);
     }
+    this.element.replaceChildren(...childrenElements);
     return this.element;
   }
 }
@@ -110,6 +116,7 @@ class ProductCardView extends View {
     this.element = document.createElement('li');
     this.element.classList.add('product');
     this.element.dataset.id = this.product.id;
+    this.element.dataset.action = 'add-to-cart';
 
     this.element.innerHTML = `
       <img class="productImage" src=${this.product.url} alt="Продукт">
@@ -153,6 +160,7 @@ class CategoryTabView extends View {
     this.element.classList.add('category');
     if (this.isActive) this.element.classList.add('active');
     this.element.dataset.id = this.category;
+    this.element.dataset.action = 'change-category';
     return this.element;
   }
 }
@@ -174,6 +182,14 @@ class CategoriesTabsView extends CompositeView {
     }
 
     return super.render();
+  }
+}
+
+class MenuView extends CompositeView {
+  constructor(children) {
+    super();
+    this.element = document.querySelector('.menu');
+    this.children = children;
   }
 }
 
@@ -234,58 +250,48 @@ class CartListView extends CompositeView {
 // Controllers
 
 class MenuController {
-  constructor(menu, cart, productCardListView, categoriesTabsView) {
-    this.menu = menu;
-    this.currentCategory = this.menu.getCategories()[0];
-    this.cart = cart;
-    this.productCardListView = productCardListView;
-    this.categoriesTabsView = categoriesTabsView;
+  constructor(store, view) {
+    this.view = view;
+    this.store = store;
   }
 
-  render() {
-    this.categoriesTabsView.category = this.currentCategory;
-    this.categoriesTabsView.render();
-    this.categoriesTabsView.on('click', this.handleTabClick);
+  init() {
+    this.view.on('click', this.handleClick);
+    PubSubBus.on('changed.category', this.handleCategoryChanged);
+    return this;
   }
 
-  destroy() {
-     this.categoriesTabsView.element.removeEventListener('click', this.handleTabClick);
+  dispose() {
+    this.view.off('click', this.handleClick);
+    PubSubBus.off('changed.category', this.handleCategoryChanged);
   }
 
-  renderProducts() {
-    this.productCardListView.category = this.currentCategory;
-    this.productCardListView.render();
-    this.productCardListView.on('click', this.handleProductClick);
-  }
+  handleClick = (event) => {
+    const element = event.target.closest('[data-action]');
 
-  destroyProducts() {
-    this.productCardListView.off('click', this.handleProductClick);
-  }
+    if (!element) return;
 
-  handleTabClick = (event) => {
-    if (event.target.classList.contains('category')) {
-      this.currentCategory = event.target.textContent.trim();
+    const action = element.dataset.action;
+    const id = element.dataset.id;
 
-      this.destroyProducts();
-      this.renderProducts();
+    if (action === 'change-category') {
+      PubSubBus.publish('changed.category', id);
+    }
 
-      this.destroy();
-      this.render();
+    if (action === 'add-to-cart') {
+      const productId = parseInt(id, 10);
+      const product = this.store.menu.getProductById(productId);
+      if (product) {
+        this.store.cart.add(product);
+        PubSubBus.publish('updated.cart');
+      }
     }
   }
 
-  handleProductClick = (event) => {
-    const target = event.target;
-    const cardElement = target.closest('[data-id]');
-    if (!cardElement) return;
-    const rawProductId = cardElement.dataset.id;
-    const productId = parseInt(rawProductId, 10);
-
-    const product = this.menu.getProductById(productId);
-    if (product) {
-      this.cart.add(product);
-      PubSubBus.publish('updated.cart');
-    }
+  handleCategoryChanged = (event) => {
+    const currentCategory = event.detail;
+    this.view.category = currentCategory;
+    this.view.render();
   }
 }
 
@@ -298,11 +304,11 @@ class CartController {
   }
 
   init() {
-    PubSubBus.subscribe('updated.cart', this.handleCartUpdated);
+    PubSubBus.on('updated.cart', this.handleCartUpdated);
   }
 
   dispose() {
-    PubSubBus.unsubscribe('updated.cart', this.handleCartUpdated);
+    PubSubBus.off('updated.cart', this.handleCartUpdated);
   }
 
   renderIcon() {
@@ -390,7 +396,8 @@ cartController.init();
 
 const productCardListView = new ProductCardListView(menu);
 const categoriesTabsView = new CategoriesTabsView(menu);
+const menuView = new MenuView([categoriesTabsView, productCardListView]);
+menuView.render();
 
-const menuController = new MenuController(menu, cart, productCardListView, categoriesTabsView);
-menuController.render();
-menuController.renderProducts();
+const menuController1 = new MenuController({menu, cart}, categoriesTabsView).init();
+const menuController2 = new MenuController({menu, cart}, productCardListView).init();
