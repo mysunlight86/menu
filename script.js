@@ -317,60 +317,30 @@ class MenuController {
 }
 
 class CartController {
-  constructor(cart, view, cartListView) {
+  constructor(cart, view) {
     this.cart = cart;
     this.view = view;
-    this.cartListView = cartListView;
   }
 
   init() {
-    // if (this.cart.getCount() > 0) {
-    //   this.cartListView.on('click', this.handleClick);
-    // }
-
+    this.dispose();
     this.view.on('click', this.handleClick);
+    PubSubBus.on('toggled.cart', this.toggleVisibility);
     PubSubBus.on('updated.cart', this.handleCartUpdated);
     return this;
   }
 
   dispose() {
     this.view.off('click', this.handleClick);
+    PubSubBus.off('toggled.cart', this.toggleVisibility);
     PubSubBus.off('updated.cart', this.handleCartUpdated);
   }
 
-  renderIcon() {
-    // this.view.render();
-    // this.view.on('click', this.handleIconClick);
-  }
-
-  destroyIcon() {
-    // this.view.off('click', this.handleIconClick);
-  }
-
-  renderCartList() {
-    // this.destroyCartList();
-    // this.cartListView.render();
-    // if (this.cart.getCount() > 0) {
-    //   this.cartListView.on('click', this.handleCartCardClick);
-    // }
-  }
-
-  // destroyCartList() {
-  //   this.cartListView.off('click', this.handleCartCardClick);
-  // }
-
   handleCartUpdated = () => {
     this.view.render();
-    // this.renderCartList();
   }
 
-  // handleIconClick = () => {
-  //   this.toggleVisibility();
-  // };
-
   handleClick = (event) => {
-    if (this.view.toggle) this.view.toggle();
-
     const element = event.target.closest('[data-action]');
 
     if (!element) return;
@@ -386,34 +356,15 @@ class CartController {
       const productId = parseInt(id, 10);
       this.cart.removeProduct(productId);
       PubSubBus.publish('updated.cart');
-      // const product = this.store.menu.getProductById(productId);
-      // if (product) {
-      //   this.store.cart.add(product);
-      //   PubSubBus.publish('updated.cart');
-      // }
-      // this.remove(productId);
-    }
-
-    // const element = event.target.closest('[data-id]');
-    if (element) {
-      // const rawProductId = element.dataset.id;
-      // const productId = parseInt(rawProductId, 10);
-      // this.remove(productId);
-
-      // this.renderIcon();
-      // this.renderCartList();
-      // this.view.render();
     }
   }
 
-  // toggleVisibility() {
-  //   cartElement.classList.toggle('hidden');
-  // }
+  toggleVisibility = () => {
+    if (this.view.toggle) this.view.toggle();
+  }
 
   remove(id) {
     this.cart.removeProduct(id);
-    // this.renderIcon();
-    // this.renderCartList();
     this.view.render();
     PubSubBus.publish('updated.cart');
   }
@@ -438,18 +389,17 @@ store.menu.add({ id: 7, title: 'Пудинг', category: 'Десерты', price
 store.menu.add({ id: 8, title: 'Йогурт', category: 'Десерты', price: '1,0 у.е.', url: './images/food.png' });
 store.menu.add({ id: 9, title: 'Мороженое', category: 'Десерты', price: '2,0 у.е.', url: './images/food.png' });
 
-const cartIconView = new CartIconView(store.cart);
-const cartListView = new CartListView(store.cart);
-
-const cartController1 = new CartController(store.cart, cartIconView).init();
-const cartController2 = new CartController(store.cart, cartListView).init();
 
 const productCardListView = new ProductCardListView(store.menu);
 const categoriesTabsView = new CategoriesTabsView(store.menu);
 const menuView = new MenuView([categoriesTabsView, productCardListView]);
 const hrView = new HrView();
+const cartIconView = new CartIconView(store.cart);
+const cartListView = new CartListView(store.cart);
 const mainView = new MainView([menuView, hrView, cartIconView, cartListView]);
 mainView.render();
 
-const menuController1 = new MenuController(store, categoriesTabsView).init();
-const menuController2 = new MenuController(store, productCardListView).init();
+new CartController(store.cart, cartIconView).init();
+new CartController(store.cart, cartListView).init();
+new MenuController(store, categoriesTabsView).init();
+new MenuController(store, productCardListView).init();
