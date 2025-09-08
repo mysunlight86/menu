@@ -365,7 +365,6 @@ class CartController {
 
   remove(id) {
     this.cart.removeProduct(id);
-    this.view.render();
     PubSubBus.publish('updated.cart');
   }
 }
