@@ -101,6 +101,9 @@ class CompositeView extends View {
       const el = child.render();
       childrenElements.push(el);
     }
+    console.log(this.children);
+    console.log(this.element);
+    console.log(childrenElements);
     this.element.replaceChildren(...childrenElements);
     return this.element;
   }
@@ -195,7 +198,7 @@ class MenuView extends CompositeView {
 
 class HrView {
   render() {
-    this.element = document.creatElement('hr');
+    this.element = document.createElement('hr');
     return this.element;
   }
 }
@@ -244,7 +247,7 @@ class CartListView extends CompositeView {
 
     if (this.cart.getCount() === 0) {
       this.element.innerHTML = `<li>Вы пока ничего не выбрали</li>`;
-      return;
+      return this.element;
     }
 
     this.children = [];
@@ -253,6 +256,14 @@ class CartListView extends CompositeView {
     }
 
     return super.render();
+  }
+}
+
+class MainView extends CompositeView {
+  constructor(children) {
+    super();
+    this.element = document.querySelector('.main');
+    this.children = children;
   }
 }
 
@@ -406,7 +417,9 @@ cartController.init();
 const productCardListView = new ProductCardListView(menu);
 const categoriesTabsView = new CategoriesTabsView(menu);
 const menuView = new MenuView([categoriesTabsView, productCardListView]);
-menuView.render();
+const hrView = new HrView();
+const mainView = new MainView([menuView, hrView, cartIconView, cartListView]);
+mainView.render();
 
 const menuController1 = new MenuController({menu, cart}, categoriesTabsView).init();
 const menuController2 = new MenuController({menu, cart}, productCardListView).init();
