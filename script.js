@@ -324,17 +324,17 @@ class CartController {
   }
 
   init() {
-    if (this.cart.getCount() > 0) {
-      this.cartListView.on('click', this.handleCartCardClick);
-    }
-    
-    this.view.on('click', this.handleIconClick);
+    // if (this.cart.getCount() > 0) {
+    //   this.cartListView.on('click', this.handleClick);
+    // }
+
+    this.view.on('click', this.handleClick);
     PubSubBus.on('updated.cart', this.handleCartUpdated);
     return this;
   }
 
   dispose() {
-    this.view.off('click', this.handleIconClick);
+    this.view.off('click', this.handleClick);
     PubSubBus.off('updated.cart', this.handleCartUpdated);
   }
 
@@ -368,19 +368,41 @@ class CartController {
   //   this.toggleVisibility();
   // };
 
-  handleCartCardClick = (event) => {
+  handleClick = (event) => {
     if (this.view.toggle) this.view.toggle();
 
-    const target = event.target;
-    const cardElement = target.closest('[data-id]');
-    if (cardElement) {
-      const rawProductId = cardElement.dataset.id;
-      const productId = parseInt(rawProductId, 10);
-      this.remove(productId);
+    const element = event.target.closest('[data-action]');
+
+    if (!element) return;
+
+    const action = element.dataset.action;
+    const id = element.dataset.id;
+
+    if (action === 'toggle') {
+      PubSubBus.publish('toggled.cart');
+    }
+
+    if (action === 'remove-from-cart') {
+      const productId = parseInt(id, 10);
+      this.cart.removeProduct(productId);
+      PubSubBus.publish('updated.cart');
+      // const product = this.store.menu.getProductById(productId);
+      // if (product) {
+      //   this.store.cart.add(product);
+      //   PubSubBus.publish('updated.cart');
+      // }
+      // this.remove(productId);
+    }
+
+    // const element = event.target.closest('[data-id]');
+    if (element) {
+      // const rawProductId = element.dataset.id;
+      // const productId = parseInt(rawProductId, 10);
+      // this.remove(productId);
 
       // this.renderIcon();
       // this.renderCartList();
-      this.view.render();
+      // this.view.render();
     }
   }
 
@@ -393,6 +415,7 @@ class CartController {
     // this.renderIcon();
     // this.renderCartList();
     this.view.render();
+    PubSubBus.publish('updated.cart');
   }
 }
 
@@ -420,9 +443,6 @@ const cartListView = new CartListView(store.cart);
 
 const cartController1 = new CartController(store.cart, cartIconView).init();
 const cartController2 = new CartController(store.cart, cartListView).init();
-// cartController.renderIcon();
-// cartController.renderCartList();
-// cartController.init();
 
 const productCardListView = new ProductCardListView(store.menu);
 const categoriesTabsView = new CategoriesTabsView(store.menu);
