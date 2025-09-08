@@ -254,6 +254,10 @@ class CartListView extends CompositeView {
 
     return super.render();
   }
+
+  toggle() {
+    this.element.classList.toggle('hidden');
+  }
 }
 
 class MainView extends CompositeView {
@@ -313,52 +317,60 @@ class MenuController {
 }
 
 class CartController {
-  constructor(menu, cart, cartIconView, cartListView) {
-    this.menu = menu;
+  constructor(cart, view, cartListView) {
     this.cart = cart;
-    this.cartIconView = cartIconView;
+    this.view = view;
     this.cartListView = cartListView;
   }
 
   init() {
+    if (this.cart.getCount() > 0) {
+      this.cartListView.on('click', this.handleCartCardClick);
+    }
+    
+    this.view.on('click', this.handleIconClick);
     PubSubBus.on('updated.cart', this.handleCartUpdated);
+    return this;
   }
 
   dispose() {
+    this.view.off('click', this.handleIconClick);
     PubSubBus.off('updated.cart', this.handleCartUpdated);
   }
 
   renderIcon() {
-    this.cartIconView.render();
-    this.cartIconView.on('click', this.handleIconClick);
+    // this.view.render();
+    // this.view.on('click', this.handleIconClick);
   }
 
   destroyIcon() {
-    this.cartIconView.element.removeEventListener('click', this.handleIconClick);
+    // this.view.off('click', this.handleIconClick);
   }
 
   renderCartList() {
-    this.destroyCartList();
-    this.cartListView.render();
-    if (this.cart.getCount() > 0) {
-      this.cartListView.on('click', this.handleCartCardClick);
-    }
+    // this.destroyCartList();
+    // this.cartListView.render();
+    // if (this.cart.getCount() > 0) {
+    //   this.cartListView.on('click', this.handleCartCardClick);
+    // }
   }
 
-  destroyCartList() {
-    this.cartListView.off('click', this.handleCartCardClick);
-  }
+  // destroyCartList() {
+  //   this.cartListView.off('click', this.handleCartCardClick);
+  // }
 
   handleCartUpdated = () => {
-    this.renderIcon();
-    this.renderCartList();
+    this.view.render();
+    // this.renderCartList();
   }
 
-  handleIconClick = () => {
-    this.toggleVisibility();
-  };
+  // handleIconClick = () => {
+  //   this.toggleVisibility();
+  // };
 
   handleCartCardClick = (event) => {
+    if (this.view.toggle) this.view.toggle();
+
     const target = event.target;
     const cardElement = target.closest('[data-id]');
     if (cardElement) {
@@ -366,19 +378,21 @@ class CartController {
       const productId = parseInt(rawProductId, 10);
       this.remove(productId);
 
-      this.renderIcon();
-      this.renderCartList();
+      // this.renderIcon();
+      // this.renderCartList();
+      this.view.render();
     }
   }
 
-  toggleVisibility() {
-    cartElement.classList.toggle('hidden');
-  }
+  // toggleVisibility() {
+  //   cartElement.classList.toggle('hidden');
+  // }
 
   remove(id) {
     this.cart.removeProduct(id);
-    this.renderIcon();
-    this.renderCartList();
+    // this.renderIcon();
+    // this.renderCartList();
+    this.view.render();
   }
 }
 
@@ -404,10 +418,11 @@ store.menu.add({ id: 9, title: 'Мороженое', category: 'Десерты',
 const cartIconView = new CartIconView(store.cart);
 const cartListView = new CartListView(store.cart);
 
-const cartController = new CartController(store.menu, store.cart, cartIconView, cartListView);
-cartController.renderIcon();
-cartController.renderCartList();
-cartController.init();
+const cartController1 = new CartController(store.cart, cartIconView).init();
+const cartController2 = new CartController(store.cart, cartListView).init();
+// cartController.renderIcon();
+// cartController.renderCartList();
+// cartController.init();
 
 const productCardListView = new ProductCardListView(store.menu);
 const categoriesTabsView = new CategoriesTabsView(store.menu);
