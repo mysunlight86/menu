@@ -193,6 +193,13 @@ class MenuView extends CompositeView {
   }
 }
 
+class HrView {
+  render() {
+    this.element = document.creatElement('hr');
+    return this.element;
+  }
+}
+
 class CartIconView extends View {
   constructor(cart) {
     super();

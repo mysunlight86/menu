@@ -320,6 +320,6 @@ class CartController {
     - [ ] бросать событие toggled.cart
     - [ ] по событию toggled.cart - переключать корзину
     - [ ] по событию updated.cart - обновлять view
-- [ ] Сделать view для hr
+- [x] Сделать view для hr
 - [ ] Объединить в композитное view: MenuView, hr, CartIconView, CartListView
 
