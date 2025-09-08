@@ -309,7 +309,7 @@ class CartController {
 
 # Контроллеры
 
-- [ ] Использовать модельный класс Store для создание модели всего приложения
+- [x] Использовать модельный класс Store для создание модели всего приложения
 - [x] Представлениям (view) корзинки и списку в корзине добавить атрибут data-action с действием по клику
 - [ ] Переработка CartController по аналогии с MenuController
   - [ ] Контроллер больше не занимается render, метод переименован в init
@@ -321,5 +321,5 @@ class CartController {
     - [ ] по событию toggled.cart - переключать корзину
     - [ ] по событию updated.cart - обновлять view
 - [x] Сделать view для hr
-- [ ] Объединить в композитное view: MenuView, hr, CartIconView, CartListView
+- [x] Объединить в композитное view: MenuView, hr, CartIconView, CartListView
 

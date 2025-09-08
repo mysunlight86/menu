@@ -101,9 +101,6 @@ class CompositeView extends View {
       const el = child.render();
       childrenElements.push(el);
     }
-    console.log(this.children);
-    console.log(this.element);
-    console.log(childrenElements);
     this.element.replaceChildren(...childrenElements);
     return this.element;
   }
@@ -180,7 +177,7 @@ class CategoriesTabsView extends CompositeView {
     this.element = document.querySelector('.categories');
 
     this.children = [];
-    for (const category of menu.getCategories()) {
+    for (const category of this.menu.getCategories()) {
       this.children.push(new CategoryTabView(category, this.category === category))
     }
 
@@ -392,34 +389,32 @@ const menuProductsElement = document.querySelector('.menuProducts');
 const cartIconElement = document.querySelector('.cartIcon');
 const cartElement = document.querySelector('.cart');
 
-const menu = new Menu();
+const store = new Store();
 
-menu.add({ id: 1, title: 'Сок', category: 'Напитки', price: '1,5 у.е.', url: './images/food.png' });
-menu.add({ id: 2, title: 'Вода', category: 'Напитки', price: '0,5 у.е.', url: './images/food.png' });
-menu.add({ id: 3, title: 'Чай', category: 'Напитки', price: '1,0 у.е.', url: './images/food.png' });
-menu.add({ id: 4, title: 'Мимоза', category: 'Салаты', price: '3,0 у.е.', url: './images/food.png' });
-menu.add({ id: 5, title: 'Оливье', category: 'Салаты', price: '2,0 у.е.', url: './images/food.png' });
-menu.add({ id: 6, title: 'Цезарь', category: 'Салаты', price: '1,5 у.е.', url: './images/food.png' });
-menu.add({ id: 7, title: 'Пудинг', category: 'Десерты', price: '1,5 у.е.', url: './images/food.png' });
-menu.add({ id: 8, title: 'Йогурт', category: 'Десерты', price: '1,0 у.е.', url: './images/food.png' });
-menu.add({ id: 9, title: 'Мороженое', category: 'Десерты', price: '2,0 у.е.', url: './images/food.png' });
+store.menu.add({ id: 1, title: 'Сок', category: 'Напитки', price: '1,5 у.е.', url: './images/food.png' });
+store.menu.add({ id: 2, title: 'Вода', category: 'Напитки', price: '0,5 у.е.', url: './images/food.png' });
+store.menu.add({ id: 3, title: 'Чай', category: 'Напитки', price: '1,0 у.е.', url: './images/food.png' });
+store.menu.add({ id: 4, title: 'Мимоза', category: 'Салаты', price: '3,0 у.е.', url: './images/food.png' });
+store.menu.add({ id: 5, title: 'Оливье', category: 'Салаты', price: '2,0 у.е.', url: './images/food.png' });
+store.menu.add({ id: 6, title: 'Цезарь', category: 'Салаты', price: '1,5 у.е.', url: './images/food.png' });
+store.menu.add({ id: 7, title: 'Пудинг', category: 'Десерты', price: '1,5 у.е.', url: './images/food.png' });
+store.menu.add({ id: 8, title: 'Йогурт', category: 'Десерты', price: '1,0 у.е.', url: './images/food.png' });
+store.menu.add({ id: 9, title: 'Мороженое', category: 'Десерты', price: '2,0 у.е.', url: './images/food.png' });
 
-const cart = new Cart();
+const cartIconView = new CartIconView(store.cart);
+const cartListView = new CartListView(store.cart);
 
-const cartIconView = new CartIconView(cart);
-const cartListView = new CartListView(cart);
-
-const cartController = new CartController(menu, cart, cartIconView, cartListView);
+const cartController = new CartController(store.menu, store.cart, cartIconView, cartListView);
 cartController.renderIcon();
 cartController.renderCartList();
 cartController.init();
 
-const productCardListView = new ProductCardListView(menu);
-const categoriesTabsView = new CategoriesTabsView(menu);
+const productCardListView = new ProductCardListView(store.menu);
+const categoriesTabsView = new CategoriesTabsView(store.menu);
 const menuView = new MenuView([categoriesTabsView, productCardListView]);
 const hrView = new HrView();
 const mainView = new MainView([menuView, hrView, cartIconView, cartListView]);
 mainView.render();
 
-const menuController1 = new MenuController({menu, cart}, categoriesTabsView).init();
-const menuController2 = new MenuController({menu, cart}, productCardListView).init();
+const menuController1 = new MenuController(store, categoriesTabsView).init();
+const menuController2 = new MenuController(store, productCardListView).init();
