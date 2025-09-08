@@ -203,7 +203,8 @@ class CartIconView extends View {
     const count = this.cart.getCount();
     const display = count > 0 ? 'inline-block' : 'none';
     this.element = document.querySelector('.cartIcon');
-    this.element.innerHTML = `<span class="orderCount" style="display: ${display}">${count}</span>`
+    this.element.innerHTML = `<span class="orderCount" style="display: ${display}">${count}</span>`;
+    this.element.dataset.action = 'toggle';
     return this.element;
   }
 }
@@ -219,6 +220,7 @@ class CartListItemView extends View {
     this.element.textContent = this.product.title;
     this.element.classList.add('cartProduct');
     this.element.dataset.id = this.product.id;
+    this.element.dataset.action = 'remove-from-cart';
     return this.element;
   }
 }
@@ -234,7 +236,7 @@ class CartListView extends CompositeView {
     this.element = document.querySelector('.cart');
 
     if (this.cart.getCount() === 0) {
-      this.element.textContent = 'Вы пока ничего не выбрали';
+      this.element.innerHTML = `<li>Вы пока ничего не выбрали</li>`;
       return;
     }
 
