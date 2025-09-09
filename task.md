@@ -350,7 +350,7 @@ import { Store } from './models.mjs'
   - controllers.mjs
   - app.mjs
 
-- [ ] Сделать AppController, который будет
+- [x] Сделать AppController, который будет
   - в методе init создавать views, controllers
   - производить инициализацию контроллеров
   - заполнять модель тестовыми данными

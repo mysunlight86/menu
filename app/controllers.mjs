@@ -53,7 +53,6 @@ export class CartController {
   }
 
   init() {
-    this.dispose();
     this.view.on('click', this.handleClick);
     PubSubBus.on('toggled.cart', this.toggleVisibility);
     PubSubBus.on('updated.cart', this.handleCartUpdated);
