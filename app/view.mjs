@@ -1,0 +1,188 @@
+class View {
+  on(eventType, handler) {
+    this.element.addEventListener(eventType, handler);
+  }
+
+  off(eventType, handler) {
+    if (this.element) this.element.removeEventListener(eventType, handler);
+  }
+}
+
+class CompositeView extends View {
+  constructor() {
+    super();
+    this.children = [];
+  }
+
+  render() {
+    const childrenElements = [];
+    for (const child of this.children) {
+      const el = child.render();
+      childrenElements.push(el);
+    }
+    this.element.replaceChildren(...childrenElements);
+    return this.element;
+  }
+}
+
+class ProductCardView extends View {
+  constructor(product) {
+    super();
+    this.product = product;
+  }
+
+  render() {
+    this.element = document.createElement('li');
+    this.element.classList.add('product');
+    this.element.dataset.id = this.product.id;
+    this.element.dataset.action = 'add-to-cart';
+
+    this.element.innerHTML = `
+      <img class="productImage" src=${this.product.url} alt="Продукт">
+      <p class="productTitle">${this.product.title}</p>
+      <p class="productPrice">${this.product.price}</p>
+    `;
+
+    return this.element;
+  }
+}
+
+export class ProductCardListView extends CompositeView {
+  constructor(menu, category = menu.getCategories()[0]) {
+    super();
+    this.menu = menu;
+    this.category = category;
+  }
+
+  render() {
+    this.element = document.querySelector('.menuProducts');
+
+    this.children = [];
+    for (const product of this.menu.getProductsByCategory(this.category)) {
+      this.children.push(new ProductCardView(product));
+    }
+
+    return super.render();
+  }
+}
+
+class CategoryTabView extends View {
+  constructor(category, isActive) {
+    super();
+    this.category = category;
+    this.isActive = isActive
+  }
+
+  render() {
+    this.element = document.createElement('li');
+    this.element.textContent = this.category;
+    this.element.classList.add('category');
+    if (this.isActive) this.element.classList.add('active');
+    this.element.dataset.id = this.category;
+    this.element.dataset.action = 'change-category';
+    return this.element;
+  }
+}
+
+export class CategoriesTabsView extends CompositeView {
+  constructor(menu) {
+    super();
+
+    this.menu = menu;
+    this.category = this.menu.getCategories()[0];
+  }
+
+  render() {
+    this.element = document.querySelector('.categories');
+
+    this.children = [];
+    for (const category of this.menu.getCategories()) {
+      this.children.push(new CategoryTabView(category, this.category === category))
+    }
+
+    return super.render();
+  }
+}
+
+export class MenuView extends CompositeView {
+  constructor(children) {
+    super();
+    this.element = document.querySelector('.menu');
+    this.children = children;
+  }
+}
+
+export class HrView {
+  render() {
+    this.element = document.createElement('hr');
+    return this.element;
+  }
+}
+
+export class CartIconView extends View {
+  constructor(cart) {
+    super();
+    this.cart = cart;
+  }
+
+  render() {
+    const count = this.cart.getCount();
+    const display = count > 0 ? 'inline-block' : 'none';
+    this.element = document.querySelector('.cartIcon');
+    this.element.innerHTML = `<span class="orderCount" style="display: ${display}">${count}</span>`;
+    this.element.dataset.action = 'toggle';
+    return this.element;
+  }
+}
+
+class CartListItemView extends View {
+  constructor(product) {
+    super();
+    this.product = product;
+  }
+
+  render() {
+    this.element = document.createElement('li');
+    this.element.textContent = this.product.title;
+    this.element.classList.add('cartProduct');
+    this.element.dataset.id = this.product.id;
+    this.element.dataset.action = 'remove-from-cart';
+    return this.element;
+  }
+}
+
+export class CartListView extends CompositeView {
+  constructor(cart) {
+    super();
+    this.cart = cart;
+  }
+
+  render() {
+    const cartProducts = this.cart.getAllProducts();
+    this.element = document.querySelector('.cart');
+
+    if (this.cart.getCount() === 0) {
+      this.element.innerHTML = `<li>Вы пока ничего не выбрали</li>`;
+      return this.element;
+    }
+
+    this.children = [];
+    for (const product of cartProducts) {
+      this.children.push(new CartListItemView(product));
+    }
+
+    return super.render();
+  }
+
+  toggle() {
+    this.element.classList.toggle('hidden');
+  }
+}
+
+export class MainView extends CompositeView {
+  constructor(children) {
+    super();
+    this.element = document.querySelector('.main');
+    this.children = children;
+  }
+}

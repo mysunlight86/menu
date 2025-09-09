@@ -343,7 +343,7 @@ import { Store } from './models.mjs'
 <script type="module" src="app/app.mjs" defer></script>
 ```
 
-- [ ] Разбить программу на модули
+- [x] Разбить программу на модули
   - infrastructure.mjs
   - models.mjs
   - view.mjs
