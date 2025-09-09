@@ -323,3 +323,30 @@ class CartController {
 - [x] Сделать view для hr
 - [x] Объединить в композитное view: MenuView, hr, CartIconView, CartListView
 
+# Разбиение программы на файлы
+
+Для экспорта из модуля объектов:
+
+```JavaScript
+export class Store {...
+```
+
+Для импорта
+
+```JavaScript
+import { Store } from './models.mjs'
+```
+
+Подключение скрипта в HTML
+
+```HTML
+<script type="module" src="app/app.mjs" defer></script>
+```
+
+- [ ] Разбить программу на модули
+  - infrastructure.mjs
+  - models.mjs
+  - view.mjs
+  - controllers.mjs
+  - app.mjs
+
