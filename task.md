@@ -354,3 +354,215 @@ import { Store } from './models.mjs'
   - в методе init создавать views, controllers
   - производить инициализацию контроллеров
   - заполнять модель тестовыми данными
+
+# Навигация
+
+1. Все элементы уже описанные в HTML сделали скрытыми.
+2. У базового класса View поддержали методы show / hide
+3. Сделали ButtonView, отображает кнопку с заданным текстом, data-action, data-id.
+4. Все View, у которых элемент создан в HTML заранее должны перенести свой поиск элемента в конструктор `this.element = document.querySelector('.menuProducts');`
+5. MainView переименовали в ScreenView, теперь это базовый класс для любого экрана.
+6. Под каждый из экранов сделали отдельный View с вёрсткой соответствующего экрана.
+7. Сделали контроллер кнопки навигации, он бросает событие в PubSubBus
+8. Для каждого из экранов сделали свой контроллер
+9. AppController управляет тем, какой экран показать, может вызвать init или dispose контроллеру экрана
+10. AppController реагирует на событие навигации
+
+```JavaScript
+
+// Общий код для всех View
+
+show() {
+  this.element.classList.remove('hidden');
+}
+
+hide() {
+  this.element.classList.add('hidden');
+}
+
+// Кнопка рисуется так:
+
+export class ButtonView extends View {
+  constructor(params = {}) {
+    super();
+    this.element = document.createElement('button');
+    this.element.type = 'button';
+    this.element.dataset.action = params.action || '';
+    this.element.dataset.id = params.id || '';
+    this.element.innerText = params.text || 'Click Me!';
+  }
+
+  render() {
+    return this.element;
+  }
+}
+
+// Базовый класс для любого экрана
+
+export class ScreenView extends CompositeView {
+  constructor(children) {
+    super();
+    this.element = document.querySelector('.main');
+    this.children = children;
+  }
+
+  show() {
+    for (const child of this.children) {
+      child.show();
+    }
+  }
+
+  hide() {
+    for (const child of this.children) {
+      child.hide();
+    }
+  }
+}
+
+// Пример контроллера целого экрана
+
+export class MenuScreenView extends ScreenView {
+  // Конструкто получает только модель, остальные элементы строятся
+  constructor(store) {
+
+    // Построим все View, которые есть на этом экране,
+    // Это похоже на вёрстку экрана
+    const productCardListView = new ProductCardListView(store.menu);
+    const categoriesTabsView = new CategoriesTabsView(store.menu);
+    const menuView = new MenuView([categoriesTabsView, productCardListView]);
+    const cartIconView = new CartIconView(store.cart);
+    const cartListView = new CartListView(store.cart);
+    const hrView = new HrView();
+    const orderBtn = new ButtonView({ text: 'Complete Order', action: 'navigate', id: 'OrderScreen' });
+
+    // Базовый класс ожидает массив из Views, которые должны быть на экране
+    super([menuView, hrView, cartIconView, cartListView, orderBtn]);
+
+    // Эти View нам понадобятся для создания контроллеров, запишем их в this
+    this.store = store;
+    this.productCardListView = productCardListView;
+    this.categoriesTabsView = categoriesTabsView;
+    this.menuView = menuView;
+    this.cartIconView = cartIconView;
+    this.cartListView = cartListView;
+    this.orderBtn = orderBtn;
+  }
+}
+
+export class OrderScreenView extends ScreenView {
+  // Реализация как у MenuScreenView, но только те View, которые должны отображаться на
+  // экране корзины
+}
+
+// Управление кнопкой
+
+export class NavigateButtonController {
+  constructor(view) {
+    this.view = view;
+  }
+
+  init() {
+    this.view.on('click', this.handleClick);
+    return this;
+  }
+
+  dispose() {
+    this.view.off('click', this.handleClick);
+  }
+
+  handleClick = (event) => {
+    const element = event.target.closest('[data-action]');
+
+    if (!element) return;
+
+    const action = element.dataset.action;
+    const id = element.dataset.id;
+
+    if (action === 'navigate') {
+      PubSubBus.publish('navigate', id);
+    }
+  }
+}
+
+// Пример контроллера экрана, у каждого из двух экранов есть по такому контроллеру
+
+export class MenuScreenController {
+  controllers = [];
+
+  constructor(store, view) {
+    this.store = store;
+    this.view = view;
+  }
+
+  // Метод вызывается при переходе на экран.
+
+  init() {
+    this.view.render();
+    this.view.show();
+
+    // Создадим контроллер, которые управляют действиями экране меню
+    // Для экрана корзины будут созданы другие контроллеры
+
+    this.controllers = [
+      new MenuController(this.store, this.view.categoriesTabsView).init(),
+      new MenuController(this.store, this.view.productCardListView).init(),
+      new CartController(this.store.cart, this.view.cartIconView).init(),
+      new CartController(this.store.cart, this.view.cartListView).init(),
+      new NavigateButtonController(this.view.orderBtn).init()
+    ];
+
+    // Тут нам пришлось скрыть корзину (список) потому-что на экране меню она по-умолчанию скрыта
+    // В контроллере оформления заказа - мы так же само её изначально показываем.
+    this.view.cartListView.hide();
+  }
+
+  // Задача методы - удалить подписки. Он будет вызываться перед тем как перейти на другой экран.
+
+  dispose() {
+    for (const child of this.controllers) {
+      child.dispose();
+    }
+    this.controllers = [];
+    this.view.hide();
+  }
+}
+
+// Фрагмет кода конструктора AppController. Так хранится список экранов и какой экран сейчас активен.
+
+this.currentScreen = 'MenuScreen';
+this.controllers = {
+  MenuScreen: new MenuScreenController(this.store, new MenuScreenView(this.store)),
+  OrderScreen: new OrderScreenController(this.store, new OrderScreenView(this.store))
+};
+
+// init / dispose вызываются каждый раз при переключении экранов.
+// задача - очистить подписки предыдущего экрана и создать подписки нового экрана.
+
+init() {
+  const controller = this.controllers[this.currentScreen];
+  controller.init();
+  PubSubBus.on('navigate', this.handleNavigate);
+}
+
+dispose() {
+  const controller = this.controllers[this.currentScreen];
+  controller.dispose();
+  PubSubBus.off('navigate', this.handleNavigate);
+}
+
+// Пример метода обработки события по навигации
+
+handleNavigate = (event) => {
+  const screen = event.detail;
+
+  if (!this.controllers[screen]) {
+    console.log(`Try navigate to unknown screen ${screen}`);
+    return;
+  }
+
+  this.dispose();
+  this.currentScreen = screen;
+  this.init();
+}
+
+```
