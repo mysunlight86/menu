@@ -6,6 +6,14 @@ class View {
   off(eventType, handler) {
     if (this.element) this.element.removeEventListener(eventType, handler);
   }
+
+  show() {
+    this.element.classList.remove('hidden');
+  }
+
+  hide() {
+    this.element.classList.add('hidden');
+  }
 }
 
 class CompositeView extends View {
