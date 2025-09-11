@@ -187,6 +187,21 @@ export class CartListView extends CompositeView {
   }
 }
 
+export class ButtonView extends View {
+  constructor(params = {}) {
+    super();
+    this.element = document.createElement('button');
+    this.element.type = 'button';
+    this.element.dataset.action = params.action || '';
+    this.element.dataset.id = params.id || '';
+    this.element.innerText = params.text || 'Click Me!';
+  }
+
+  render() {
+    return this.element;
+  }
+}
+
 export class MainView extends CompositeView {
   constructor(children) {
     super();
