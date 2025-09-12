@@ -100,6 +100,34 @@ export class CartController {
   }
 }
 
+export class NavigateButtonController {
+  constructor(view) {
+    this.view = view;
+  }
+
+  init() {
+    this.view.on('click', this.handleClick);
+    return this;
+  }
+
+  dispose() {
+    this.view.off('click', this.handleClick);
+  }
+
+  handleClick = (event) => {
+    const element = event.target.closest('[data-action]');
+
+    if (!element) return;
+
+    const action = element.dataset.action;
+    const id = element.dataset.id;
+
+    if (action === 'navigate') {
+      PubSubBus.publish('navigate', id);
+    }
+  }
+}
+
 export class AppController {
   store = new Store();
   controllers = [];
