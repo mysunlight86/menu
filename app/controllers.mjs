@@ -1,6 +1,6 @@
 import { PubSubBus } from './infrastructure.mjs';
 import { Store } from './models.mjs';
-import { ProductCardListView, CategoriesTabsView, MenuView, HrView, CartIconView, CartListView, ScreenView } from './view.mjs';
+import { ProductCardListView, CategoriesTabsView, MenuView, HrView, CartIconView, CartListView, ScreenView, MenuScreenView, OrderScreenView } from './view.mjs';
 
 export class MenuController {
   constructor(store, view) {
@@ -193,14 +193,38 @@ export class AppController {
   store = new Store();
   controllers = [];
 
-  init() {
+  constructor() {
+    this.currentScreen = 'MenuScreen';
     this.loadSampleData();
+    this.controllers = {
+      MenuScreen: new MenuScreenController(this.store, new MenuScreenView(this.store)),
+      OrderScreen: new OrderScreenController(this.store, new OrderScreenView(this.store))
+    };
+  }
+
+  init() {
+    const controller = this.controllers[this.currentScreen];
+    controller.init();
+    PubSubBus.on('navigate', this.handleNavigate);
   }
 
   dispose() {
-    for (const child of this.controllers) {
-      child.dispose();
+    const controller = this.controllers[this.currentScreen];
+    controller.dispose();
+    PubSubBus.off('navigate', this.handleNavigate);
+  }
+
+  handleNavigate = (event) => {
+    const screen = event.detail;
+
+    if (!this.controllers[screen]) {
+      console.log(`Try navigate to unknown screen ${screen}`);
+      return;
     }
+
+    this.dispose();
+    this.currentScreen = screen;
+    this.init();
   }
 
   loadSampleData() {

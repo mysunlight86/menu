@@ -117,7 +117,7 @@ export class MenuView extends CompositeView {
   }
 }
 
-export class HrView {
+export class HrView extends View {
   render() {
     this.element = document.createElement('hr');
     return this.element;
