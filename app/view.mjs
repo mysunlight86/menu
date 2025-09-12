@@ -199,10 +199,22 @@ export class ButtonView extends View {
   }
 }
 
-export class MainView extends CompositeView {
+export class ScreenView extends CompositeView {
   constructor(children) {
     super();
     this.element = document.querySelector('.main');
     this.children = children;
+  }
+
+  show() {
+    for (const child of this.children) {
+      child.show();
+    }
+  }
+
+  hide() {
+    for (const child of this.children) {
+      child.hide();
+    }
   }
 }
