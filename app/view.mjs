@@ -60,11 +60,10 @@ export class ProductCardListView extends CompositeView {
     super();
     this.menu = menu;
     this.category = category;
+    this.element = document.querySelector('.menuProducts');
   }
 
   render() {
-    this.element = document.querySelector('.menuProducts');
-
     this.children = [];
     for (const product of this.menu.getProductsByCategory(this.category)) {
       this.children.push(new ProductCardView(product));
@@ -95,14 +94,12 @@ class CategoryTabView extends View {
 export class CategoriesTabsView extends CompositeView {
   constructor(menu) {
     super();
-
     this.menu = menu;
     this.category = this.menu.getCategories()[0];
+    this.element = document.querySelector('.categories');
   }
 
   render() {
-    this.element = document.querySelector('.categories');
-
     this.children = [];
     for (const category of this.menu.getCategories()) {
       this.children.push(new CategoryTabView(category, this.category === category))
@@ -131,12 +128,12 @@ export class CartIconView extends View {
   constructor(cart) {
     super();
     this.cart = cart;
+    this.element = document.querySelector('.cartIcon');
   }
 
   render() {
     const count = this.cart.getCount();
     const display = count > 0 ? 'inline-block' : 'none';
-    this.element = document.querySelector('.cartIcon');
     this.element.innerHTML = `<span class="orderCount" style="display: ${display}">${count}</span>`;
     this.element.dataset.action = 'toggle';
     return this.element;
@@ -163,11 +160,11 @@ export class CartListView extends CompositeView {
   constructor(cart) {
     super();
     this.cart = cart;
+    this.element = document.querySelector('.cart');
   }
 
   render() {
     const cartProducts = this.cart.getAllProducts();
-    this.element = document.querySelector('.cart');
 
     if (this.cart.getCount() === 0) {
       this.element.innerHTML = `<li>Вы пока ничего не выбрали</li>`;
