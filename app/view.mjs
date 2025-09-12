@@ -218,3 +218,38 @@ export class ScreenView extends CompositeView {
     }
   }
 }
+
+export class MenuScreenView extends ScreenView {
+  constructor(store) {
+    const productCardListView = new ProductCardListView(store.menu);
+    const categoriesTabsView = new CategoriesTabsView(store.menu);
+    const menuView = new MenuView([categoriesTabsView, productCardListView]);
+    const hrView = new HrView();
+    const cartIconView = new CartIconView(store.cart);
+    const cartListView = new CartListView(store.cart);
+    const orderBtn = new ButtonView({ text: 'Complete Order', action: 'navigate', id: 'OrderScreen' });
+
+    super([menuView, hrView, cartIconView, cartListView, orderBtn]);
+
+    this.store = store;
+    this.productCardListView = productCardListView;
+    this.categoriesTabsView = categoriesTabsView;
+    this.menuView = menuView;
+    this.cartIconView = cartIconView;
+    this.cartListView = cartListView;
+    this.orderBtn = orderBtn;
+  }
+}
+
+export class OrderScreenView extends ScreenView {
+  constructor(store) {
+    const cartListView = new CartListView(store.cart);
+    const orderBtn = new ButtonView({ text: 'Order more', action: 'navigate', id: 'MenuScreen' });
+
+    super([cartListView, orderBtn]);
+
+    this.store = store;
+    this.cartListView = cartListView;
+    this.orderBtn = orderBtn;
+  }
+}

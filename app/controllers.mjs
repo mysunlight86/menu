@@ -107,21 +107,15 @@ export class AppController {
   init() {
     this.loadSampleData();
 
-    const productCardListView = new ProductCardListView(this.store.menu);
-    const categoriesTabsView = new CategoriesTabsView(this.store.menu);
-    const menuView = new MenuView([categoriesTabsView, productCardListView]);
-    const hrView = new HrView();
-    const cartIconView = new CartIconView(this.store.cart);
-    const cartListView = new CartListView(this.store.cart);
-    const screenView = new ScreenView([menuView, hrView, cartIconView, cartListView]);
-    screenView.render();
+    // const screenView = new ScreenView([menuView, hrView, cartIconView, cartListView]);
+    // screenView.render();
 
-    this.controllers = [
-      new MenuController(this.store, categoriesTabsView).init(),
-      new MenuController(this.store, productCardListView).init(),
-      new CartController(this.store.cart, cartIconView).init(),
-      new CartController(this.store.cart, cartListView).init()
-    ]
+    // this.controllers = [
+    //   new MenuController(this.store, categoriesTabsView).init(),
+    //   new MenuController(this.store, productCardListView).init(),
+    //   new CartController(this.store.cart, cartIconView).init(),
+    //   new CartController(this.store.cart, cartListView).init()
+    // ]
   }
 
   dispose() {
