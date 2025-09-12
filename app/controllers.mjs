@@ -128,22 +128,73 @@ export class NavigateButtonController {
   }
 }
 
+export class MenuScreenController {
+  controllers = [];
+
+  constructor(store, view) {
+    this.store = store;
+    this.view = view;
+  }
+
+  init() {
+    this.view.render();
+    this.view.show();
+
+    this.controllers = [
+      new MenuController(this.store, this.view.categoriesTabsView).init(),
+      new MenuController(this.store, this.view.productCardListView).init(),
+      new CartController(this.store.cart, this.view.cartIconView).init(),
+      new CartController(this.store.cart, this.view.cartListView).init(),
+      new NavigateButtonController(this.view.orderBtn).init()
+    ];
+
+    this.view.cartListView.hide();
+  }
+
+  dispose() {
+    for (const child of this.controllers) {
+      child.dispose();
+    }
+    this.controllers = [];
+    this.view.hide();
+  }
+}
+
+export class OrderScreenController {
+  controllers = [];
+
+  constructor(store, view) {
+    this.store = store;
+    this.view = view;
+  }
+
+  init() {
+    this.view.render();
+    this.view.show();
+
+    this.controllers = [
+      new CartController(this.store.cart, this.view.cartListView).init(),
+      new NavigateButtonController(this.view.orderBtn).init()
+    ];
+
+    this.view.cartListView.show();
+  }
+
+  dispose() {
+    for (const child of this.controllers) {
+      child.dispose();
+    }
+    this.controllers = [];
+    this.view.hide();
+  }
+}
+
 export class AppController {
   store = new Store();
   controllers = [];
 
   init() {
     this.loadSampleData();
-
-    // const screenView = new ScreenView([menuView, hrView, cartIconView, cartListView]);
-    // screenView.render();
-
-    // this.controllers = [
-    //   new MenuController(this.store, categoriesTabsView).init(),
-    //   new MenuController(this.store, productCardListView).init(),
-    //   new CartController(this.store.cart, cartIconView).init(),
-    //   new CartController(this.store.cart, cartListView).init()
-    // ]
   }
 
   dispose() {
