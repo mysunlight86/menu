@@ -56,7 +56,7 @@ class ProductCardView extends View {
 }
 
 export class ProductCardListView extends CompositeView {
-  constructor(menu, category = menu.getCategories()[0]) {
+  constructor(menu, category) {
     super();
     this.menu = menu;
     this.category = category;
@@ -64,8 +64,9 @@ export class ProductCardListView extends CompositeView {
   }
 
   render() {
+    const category = this.category || this.menu.getCategories()[0];
     this.children = [];
-    for (const product of this.menu.getProductsByCategory(this.category)) {
+    for (const product of this.menu.getProductsByCategory(category)) {
       this.children.push(new ProductCardView(product));
     }
 
