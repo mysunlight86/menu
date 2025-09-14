@@ -1,5 +1,6 @@
 class Menu {
   products = [];
+  loaded = false;
 
   add(product) {
     this.products.push(product);
@@ -28,6 +29,10 @@ class Menu {
       }
     }
     return null;
+  }
+
+  put(products) {
+    this.products = products;
   }
 }
 
