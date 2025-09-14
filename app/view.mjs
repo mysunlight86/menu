@@ -207,6 +207,18 @@ export class ScreenView extends CompositeView {
     this.children = children;
   }
 
+  render() {
+    super.render();
+
+    if (!this.store.loaded) {
+      const el = document.createElement('div');
+      el.innerText = 'Loading...';
+      this.element.replaceChildren(el);
+    }
+
+    return this.element;
+  }
+
   show() {
     for (const child of this.children) {
       child.show();
