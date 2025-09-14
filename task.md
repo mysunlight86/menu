@@ -566,3 +566,58 @@ handleNavigate = (event) => {
 }
 
 ```
+
+# Загрузка данных с сервера
+
+1. Вынести в файл products.json тестовые данные.
+2. В инфраструктуре добавить класс для загрузки данных с сервреа.
+3. В моделе сделать флаг `loaded` и метод `put` для установки загруженных данных.
+4. View: Выбор первой категории происходит при рендере. Потому-что конструкторы работают до загрузки данных и нет из чего выбрать категорию.
+5. ScreenView показывает спинер в методе render пока нет данных.
+6. MenuScreenController подписывается на событие `loaded.data`, по этому событию происходит `this.view.render();`. Это обновляет экран и отображает загруженные данные.
+7. `AppController` загружает данные через инфраструктурный класс и записывает их в модель. Затем бросает событие `loaded.data`.
+
+
+```JavaScript
+
+// Загрузка данных с сервера
+const response = await fetch('./products.json');
+const data = await response.json();
+return data;
+
+// Render у View
+
+const category = this.category || this.menu.getCategories()[0];
+this.children = [];
+for (const product of this.menu.getProductsByCategory(category)) {
+  this.children.push(new ProductCardView(product));
+}
+return super.render();
+
+// Render у экрана
+
+  render() {
+    super.render(); // создаёт все дочерние view, чтобы можно было на них подписаться
+
+    if (!this.store.loaded) { // срабатывает только если нет данных в моделе
+      const el = document.createElement('div');
+      el.innerText = 'Loading...';
+      this.element.replaceChildren(el); // Заменяет на странице пустые view на спинер
+    }
+
+    return this.element;
+  }
+
+// AppController, вместо loadSampleData
+
+async loadData() {
+  const data = await DataLoader.getProducts();
+  this.store.menu.put(data);
+  this.store.loaded = true;
+  PubSubBus.publish('loaded.data');
+}
+
+
+```
+
+

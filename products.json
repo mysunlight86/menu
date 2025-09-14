@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "title": "Сок",
+    "category": "Напитки",
+    "price": "1,5 у.е.",
+    "url": "./images/food.png"
+  },
+  {
+    "id": 2,
+    "title": "Вода",
+    "category": "Напитки",
+    "price": "0,5 у.е.",
+    "url": "./images/food.png"
+  },
+  {
+    "id": 3,
+    "title": "Чай",
+    "category": "Напитки",
+    "price": "1,0 у.е.",
+    "url": "./images/food.png"
+  },
+  {
+    "id": 4,
+    "title": "Мимоза",
+    "category": "Салаты",
+    "price": "3,0 у.е.",
+    "url": "./images/food.png"
+  },
+  {
+    "id": 5,
+    "title": "Оливье",
+    "category": "Салаты",
+    "price": "2,0 у.е.",
+    "url": "./images/food.png"
+  },
+  {
+    "id": 6,
+    "title": "Цезарь",
+    "category": "Салаты",
+    "price": "1,5 у.е.",
+    "url": "./images/food.png"
+  },
+  {
+    "id": 7,
+    "title": "Пудинг",
+    "category": "Десерты",
+    "price": "1,5 у.е.",
+    "url": "./images/food.png"
+  },
+  {
+    "id": 8,
+    "title": "Йогурт",
+    "category": "Десерты",
+    "price": "1,0 у.е.",
+    "url": "./images/food.png"
+  },
+  {
+    "id": 9,
+    "title": "Мороженое",
+    "category": "Десерты",
+    "price": "2,0 у.е.",
+    "url": "./images/food.png"
+  }
+]
