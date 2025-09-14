@@ -236,21 +236,26 @@ export class MenuScreenView extends ScreenView {
   constructor(store) {
     const productCardListView = new ProductCardListView(store.menu);
     const categoryTabListView = new CategoryTabListView(store.menu);
-    const menuView = new MenuView([categoryTabListView, productCardListView]);
-    const hrView = new HrView();
-    const cartIconView = new CartIconView(store.cart);
-    const cartListView = new CartListView(store.cart);
-    const orderBtn = new ButtonView({ text: 'Complete Order', action: 'navigate', id: 'OrderScreen' });
+    const views = [
+      productCardListView,
+      categoryTabListView,
+      new MenuView([categoryTabListView, productCardListView]),
+      new HrView(),
+      new CartIconView(store.cart),
+      new CartListView(store.cart),
+      new ButtonView({ text: 'Complete Order', action: 'navigate', id: 'OrderScreen' })
+    ]
 
-    super([menuView, hrView, cartIconView, cartListView, orderBtn]);
+    super([views[2], views[3], views[4], views[5], views[6]]);
 
     this.store = store;
-    this.productCardListView = productCardListView;
-    this.categoryTabListView = categoryTabListView;
-    this.menuView = menuView;
-    this.cartIconView = cartIconView;
-    this.cartListView = cartListView;
-    this.orderBtn = orderBtn;
+    Object.assign(this, views);
+    // this.productCardListView = productCardListView;
+    // this.categoryTabListView = categoryTabListView;
+    // this.menuView = menuView;
+    // this.cartIconView = cartIconView;
+    // this.cartListView = cartListView;
+    // this.orderBtn = orderBtn;
   }
 }
 
