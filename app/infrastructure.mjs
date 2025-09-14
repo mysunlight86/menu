@@ -11,7 +11,7 @@ export class PubSubBus {
     document.dispatchEvent(new CustomEvent(eventType, { detail }))
   }
 
-  static async getData() {
+  static async getProducts() {
     const response = await fetch('./products.json');
     const data = await response.json();
     return data;

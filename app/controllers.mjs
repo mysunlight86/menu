@@ -201,7 +201,7 @@ export class AppController {
 
   constructor() {
     this.currentScreen = 'MenuScreen';
-    this.loadSampleData();
+    this.loadData();
     this.controllers = {
       MenuScreen: new MenuScreenController(this.store, new MenuScreenView(this.store)),
       OrderScreen: new OrderScreenController(this.store, new OrderScreenView(this.store))
@@ -233,15 +233,10 @@ export class AppController {
     this.init();
   }
 
-  loadSampleData() {
-    this.store.menu.add({ id: 1, title: 'Сок', category: 'Напитки', price: '1,5 у.е.', url: './images/food.png' });
-    this.store.menu.add({ id: 2, title: 'Вода', category: 'Напитки', price: '0,5 у.е.', url: './images/food.png' });
-    this.store.menu.add({ id: 3, title: 'Чай', category: 'Напитки', price: '1,0 у.е.', url: './images/food.png' });
-    this.store.menu.add({ id: 4, title: 'Мимоза', category: 'Салаты', price: '3,0 у.е.', url: './images/food.png' });
-    this.store.menu.add({ id: 5, title: 'Оливье', category: 'Салаты', price: '2,0 у.е.', url: './images/food.png' });
-    this.store.menu.add({ id: 6, title: 'Цезарь', category: 'Салаты', price: '1,5 у.е.', url: './images/food.png' });
-    this.store.menu.add({ id: 7, title: 'Пудинг', category: 'Десерты', price: '1,5 у.е.', url: './images/food.png' });
-    this.store.menu.add({ id: 8, title: 'Йогурт', category: 'Десерты', price: '1,0 у.е.', url: './images/food.png' });
-    this.store.menu.add({ id: 9, title: 'Мороженое', category: 'Десерты', price: '2,0 у.е.', url: './images/food.png' });
+  async loadData() {
+    const data = await PubSubBus.getProducts();
+    this.store.menu.put(data);
+    this.store.loaded = true;
+    PubSubBus.publish('loaded.data');
   }
 }
