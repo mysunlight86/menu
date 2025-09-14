@@ -91,7 +91,7 @@ class CategoryTabView extends View {
   }
 }
 
-export class CategoriesTabsView extends CompositeView {
+export class CategoryTabListView extends CompositeView {
   constructor(menu) {
     super();
     this.menu = menu;
@@ -222,8 +222,8 @@ export class ScreenView extends CompositeView {
 export class MenuScreenView extends ScreenView {
   constructor(store) {
     const productCardListView = new ProductCardListView(store.menu);
-    const categoriesTabsView = new CategoriesTabsView(store.menu);
-    const menuView = new MenuView([categoriesTabsView, productCardListView]);
+    const categoryTabListView = new CategoryTabListView(store.menu);
+    const menuView = new MenuView([categoryTabListView, productCardListView]);
     const hrView = new HrView();
     const cartIconView = new CartIconView(store.cart);
     const cartListView = new CartListView(store.cart);
@@ -233,7 +233,7 @@ export class MenuScreenView extends ScreenView {
 
     this.store = store;
     this.productCardListView = productCardListView;
-    this.categoriesTabsView = categoriesTabsView;
+    this.categoryTabListView = categoryTabListView;
     this.menuView = menuView;
     this.cartIconView = cartIconView;
     this.cartListView = cartListView;

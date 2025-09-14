@@ -1,6 +1,6 @@
 import { PubSubBus } from './infrastructure.mjs';
 import { Store } from './models.mjs';
-import { ProductCardListView, CategoriesTabsView, MenuView, HrView, CartIconView, CartListView, ScreenView, MenuScreenView, OrderScreenView } from './view.mjs';
+import { MenuScreenView, OrderScreenView } from './view.mjs';
 
 export class MenuController {
   constructor(store, view) {
@@ -141,7 +141,7 @@ export class MenuScreenController {
     this.view.show();
 
     this.controllers = [
-      new MenuController(this.store, this.view.categoriesTabsView).init(),
+      new MenuController(this.store, this.view.categoryTabListView).init(),
       new MenuController(this.store, this.view.productCardListView).init(),
       new CartController(this.store.cart, this.view.cartIconView).init(),
       new CartController(this.store.cart, this.view.cartListView).init(),

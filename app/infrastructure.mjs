@@ -10,4 +10,10 @@ export class PubSubBus {
   static publish(eventType, detail) {
     document.dispatchEvent(new CustomEvent(eventType, { detail }))
   }
+
+  static async getData() {
+    const response = await fetch('./products.json');
+    const data = await response.json();
+    return data;
+  }
 }
