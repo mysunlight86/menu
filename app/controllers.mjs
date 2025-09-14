@@ -137,6 +137,7 @@ export class MenuScreenController {
   }
 
   init() {
+    PubSubBus.on('loaded.data', this.handleDataLoaded);
     this.view.render();
     this.view.show();
 
@@ -157,6 +158,11 @@ export class MenuScreenController {
     }
     this.controllers = [];
     this.view.hide();
+    PubSubBus.off('loaded.data', this.handleDataLoaded);
+  }
+
+  handleDataLoaded = () => {
+    this.view.render();
   }
 }
 
