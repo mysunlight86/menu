@@ -52,8 +52,15 @@ class Cart {
   removeProduct(id) {
     for (let i = 0; i < this.products.length; i++) {
       if (this.products[i].id === id) {
-        this.products.splice(i, 1);
-        return;
+        if (!this.products[i].count) {
+          this.products.splice(i, 1);
+          return;
+        } else if (this.products[i].count > 2) {
+          this.products[i].count--;
+          return;
+        } else {
+          delete this.products[i].count;
+        }
       }
     }
   }
