@@ -153,10 +153,16 @@ class CartListItemView extends View {
 
   render() {
     this.element = document.createElement('li');
-    this.element.textContent = this.product.title;
     this.element.classList.add('cartProduct');
     this.element.dataset.id = this.product.id;
     this.element.dataset.action = 'remove-from-cart';
+
+    if (!this.product.count) {
+      this.element.textContent = this.product.title;
+    } else {
+      this.element.textContent = `${this.product.title} x ${this.product.count}`;
+    }
+
     return this.element;
   }
 }
@@ -176,6 +182,17 @@ export class CartListView extends CompositeView {
       this.element.innerHTML = `<li>Вы пока ничего не выбрали</li>`;
       return this.element;
     }
+
+    // const cartProducts = [];
+    // for (const product of products) {
+    //   if (!product.count) {
+    //     cartProducts.push(product);
+    //   } else {
+    //     console.log('Такой продукт уже есть');
+
+    //     console.log(product);
+    //   }
+    // }
 
     this.children = [];
     for (const product of cartProducts) {

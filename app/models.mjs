@@ -40,7 +40,13 @@ class Cart {
   products = [];
 
   add(product) {
-    this.products.push(product);
+    if (!this.products.includes(product)) {
+      this.products.push(product);
+    } else if (!product.count) {
+      product.count = 2;
+    } else {
+      product.count++;
+    }
   }
 
   removeProduct(id) {
