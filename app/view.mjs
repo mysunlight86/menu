@@ -60,7 +60,8 @@ export class ProductCardListView extends CompositeView {
     super();
     this.menu = menu;
     this.category = category;
-    this.element = document.querySelector('.menuProducts');
+    this.element = document.createElement('ul');
+    this.element.classList.add('menuProducts');
   }
 
   render() {
@@ -97,7 +98,8 @@ export class CategoryTabListView extends CompositeView {
     super();
     this.menu = menu;
     this.category = this.menu.getCategories()[0];
-    this.element = document.querySelector('.categories');
+    this.element = document.createElement('ul');
+    this.element.classList.add('categories');
   }
 
   render() {
@@ -113,7 +115,8 @@ export class CategoryTabListView extends CompositeView {
 export class MenuView extends CompositeView {
   constructor(children) {
     super();
-    this.element = document.querySelector('.menu');
+    this.element = document.createElement('div');
+    this.element.classList.add('menu');
     this.children = children;
   }
 }
@@ -129,7 +132,8 @@ export class CartIconView extends View {
   constructor(cart) {
     super();
     this.cart = cart;
-    this.element = document.querySelector('.cartIcon');
+    this.element = document.createElement('div');
+    this.element.className = 'cartIcon';
   }
 
   render() {
@@ -161,7 +165,8 @@ export class CartListView extends CompositeView {
   constructor(cart) {
     super();
     this.cart = cart;
-    this.element = document.querySelector('.cart');
+    this.element = document.createElement('ul');
+    this.element.classList.add('cart');
   }
 
   render() {
