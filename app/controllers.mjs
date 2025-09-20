@@ -236,7 +236,7 @@ export class AppController {
   async loadData() {
     const data = await PubSubBus.getProducts();
     this.store.menu.put(data);
-    this.store.loaded = true;
+    this.store.menu.loaded = true;
     PubSubBus.publish('loaded.data');
   }
 }

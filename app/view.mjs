@@ -215,7 +215,7 @@ export class ScreenView extends CompositeView {
   render() {
     super.render();
 
-    if (!this.store.loaded) {
+    if (!this.store.menu.loaded) {
       const el = document.createElement('div');
       el.innerText = 'Loading...';
       this.element.replaceChildren(el);
