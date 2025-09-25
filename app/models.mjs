@@ -40,29 +40,34 @@ class Cart {
   products = [];
 
   add(product) {
-    if (!this.products.includes(product)) {
-      this.products.push(product);
-    } else if (!product.count) {
-      product.count = 2;
-    } else {
-      product.count++;
-    }
+    this.products.push(product);
+
+    // if (!this.products.includes(product)) {
+    //   this.products.push(product);
+    // } else if (!product.count) {
+    //   product.count = 2;
+    // } else {
+    //   product.count++;
+    // }
   }
 
   removeProduct(id) {
-    for (let i = 0; i < this.products.length; i++) {
-      if (this.products[i].id === id) {
-        if (!this.products[i].count) {
-          this.products.splice(i, 1);
-          return;
-        } else if (this.products[i].count > 2) {
-          this.products[i].count--;
-          return;
-        } else {
-          delete this.products[i].count;
-        }
-      }
-    }
+    const index = this.products.findIndex((_prod) => _prod.id === id);
+    if (index !== -1) this.products.splice(index, 1);
+
+    // for (let i = 0; i < this.products.length; i++) {
+    //   if (this.products[i].id === id) {
+    //     if (!this.products[i].count) {
+    //       this.products.splice(i, 1);
+    //       return;
+    //     } else if (this.products[i].count > 2) {
+    //       this.products[i].count--;
+    //       return;
+    //     } else {
+    //       delete this.products[i].count;
+    //     }
+    //   }
+    // }
   }
 
   getAllProducts() {

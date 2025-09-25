@@ -146,9 +146,10 @@ export class CartIconView extends View {
 }
 
 class CartListItemView extends View {
-  constructor(product) {
+  constructor(product, count) {
     super();
     this.product = product;
+    this.count = count;
   }
 
   render() {
@@ -157,10 +158,10 @@ class CartListItemView extends View {
     this.element.dataset.id = this.product.id;
     this.element.dataset.action = 'remove-from-cart';
 
-    if (!this.product.count) {
+    if (this.count === 1) {
       this.element.textContent = this.product.title;
     } else {
-      this.element.textContent = `${this.product.title} x ${this.product.count}`;
+      this.element.textContent = `${this.product.title} x ${this.count}`;
     }
 
     return this.element;
@@ -183,6 +184,19 @@ export class CartListView extends CompositeView {
       return this.element;
     }
 
+    const cartItems = {};
+
+    for (const product of cartProducts) {
+      if (!cartItems[product.id]) {
+        cartItems[product.id] = {
+          product,
+          count: 0,
+        };
+      }
+      cartItems[product.id].count++;
+    }
+
+
     // const cartProducts = [];
     // for (const product of products) {
     //   if (!product.count) {
@@ -195,8 +209,8 @@ export class CartListView extends CompositeView {
     // }
 
     this.children = [];
-    for (const product of cartProducts) {
-      this.children.push(new CartListItemView(product));
+    for (const item of Object.values(cartItems)) {
+      this.children.push(new CartListItemView(item.product, item.count));
     }
 
     return super.render();
