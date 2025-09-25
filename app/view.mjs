@@ -184,18 +184,11 @@ export class CartListView extends CompositeView {
       return this.element;
     }
 
-    const cartItems = {};
-
-    for (const product of cartProducts) {
-      if (!cartItems[product.id]) {
-        cartItems[product.id] = {
-          product,
-          count: 0,
-        };
-      }
-      cartItems[product.id].count++;
-    }
-
+    const cartItems = cartProducts.reduce((_items, product) => {
+      if (!_items[product.id]) _items[product.id] = {product, count: 0};
+      _items[product.id].count++;
+      return _items;
+    }, {});
 
     // const cartProducts = [];
     // for (const product of products) {
