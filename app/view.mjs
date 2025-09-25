@@ -97,15 +97,15 @@ export class CategoryTabListView extends CompositeView {
   constructor(menu) {
     super();
     this.menu = menu;
-    this.category = this.menu.getCategories()[0];
     this.element = document.createElement('ul');
     this.element.classList.add('categories');
   }
 
   render() {
     this.children = [];
+    const activeCategory = this.category || this.menu.getCategories()[0];
     for (const category of this.menu.getCategories()) {
-      this.children.push(new CategoryTabView(category, this.category === category))
+      this.children.push(new CategoryTabView(category, activeCategory === category))
     }
 
     return super.render();
