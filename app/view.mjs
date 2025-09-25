@@ -230,7 +230,7 @@ export class ButtonView extends View {
 }
 
 export class ScreenView extends CompositeView {
-  constructor(children) {
+  constructor(children = []) {
     super();
     this.element = document.querySelector('.main');
     this.children = children;
@@ -263,22 +263,24 @@ export class ScreenView extends CompositeView {
 
 export class MenuScreenView extends ScreenView {
   constructor(store) {
-    const productCardListView = new ProductCardListView(store.menu);
-    const categoryTabListView = new CategoryTabListView(store.menu);
-    const views = {
-      productCardListView,
-      categoryTabListView,
-      menuView: new MenuView([categoryTabListView, productCardListView]),
-      hrView: new HrView(),
-      cartIconView: new CartIconView(store.cart),
-      cartListView: new CartListView(store.cart),
-      orderBtn: new ButtonView({ text: 'Complete Order', action: 'navigate', id: 'OrderScreen' })
-    }
-
-    super([views.menuView, views.hrView, views.cartIconView, views.cartListView, views.orderBtn]);
+    super();
 
     this.store = store;
-    Object.assign(this, views);
+    this.productCardListView = new ProductCardListView(store.menu);
+    this.categoryTabListView = new CategoryTabListView(store.menu);
+    this.menuView = new MenuView([this.categoryTabListView, this.productCardListView]),
+    this.hrView = new HrView(),
+    this.cartIconView = new CartIconView(store.cart),
+    this.cartListView = new CartListView(store.cart),
+    this.orderBtn = new ButtonView({ text: 'Complete Order', action: 'navigate', id: 'OrderScreen' })
+
+    this.children = [
+      this.menuView,
+      this.hrView,
+      this.cartIconView,
+      this.cartListView,
+      this.orderBtn
+    ];
   }
 }
 
